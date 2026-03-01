@@ -1,0 +1,96 @@
+# Column mapping: canonical field name → actual CSV column name
+# This file is for the sample data (items_master_v4 / po_transactions_v4 / suppliers_master_po_v4).
+#
+# When a client provides data with different column names,
+# copy this file, rename it (e.g. client_a.yaml), and update the right-hand values.
+# The application reads the mapping at runtime — no code changes required.
+
+# ------------------------------------------------------------------
+# items_master
+# ------------------------------------------------------------------
+items_master:
+  file_pattern: "items_master*.csv"    # glob to auto-detect the file
+  canonical_columns:
+    item_code:         item_code
+    cat_large_id:      item_cat_l_id
+    cat_large_name:    item_cat_l_name
+    cat_medium_id:     item_cat_m_id
+    cat_medium_name:   item_cat_m_name
+    cat_small_id:      item_cat_s_id
+    cat_small_name:    item_cat_s_name
+    uom:               uom
+    tax_rate:          tax_rate
+
+# ------------------------------------------------------------------
+# po_transactions
+# ------------------------------------------------------------------
+po_transactions:
+  file_pattern: "po_transactions*.csv"
+  canonical_columns:
+    po_number:               po_number
+    po_line:                 po_line
+    posting_date:            posting_date
+    company_code:            company_code
+    site_id:                 site_id
+    site_name:               site_name
+    department_id:           department_id
+    department_name:         department_name
+    cost_center:             cost_center
+    supplier_id:             supplier_child_id      # child (most granular)
+    supplier_name:           supplier_child_name
+    supplier_parent_id:      supplier_parent_id
+    supplier_parent_name:    supplier_parent_name
+    supplier_group_id:       supplier_grandparent_id
+    supplier_group_name:     supplier_grandparent_name
+    item_code:               item_code
+    cat_large_id:            item_cat_l_id
+    cat_large_name:          item_cat_l_name
+    cat_medium_id:           item_cat_m_id
+    cat_medium_name:         item_cat_m_name
+    cat_small_id:            item_cat_s_id
+    cat_small_name:          item_cat_s_name
+    uom:                     uom
+    quantity:                quantity
+    unit_price:              unit_price
+    net_amount:              net_amount
+    currency:                currency
+    payment_terms:           payment_terms
+    buyer:                   buyer
+    contract_flag:           contract_flag
+    purchasing_channel:      purchasing_channel
+    tax_amount:              tax_amount
+    gross_amount:            gross_amount
+
+# ------------------------------------------------------------------
+# suppliers_master
+# ------------------------------------------------------------------
+suppliers_master:
+  file_pattern: "suppliers_master*.csv"
+  canonical_columns:
+    supplier_id:             supplier_child_id
+    supplier_name:           supplier_child_name
+    supplier_parent_id:      supplier_parent_id
+    supplier_parent_name:    supplier_parent_name
+    supplier_group_id:       supplier_grandparent_id
+    supplier_group_name:     supplier_grandparent_name
+    contact_person:          contact_person
+    contact_role:            contact_role
+    contact_email:           contact_email
+    postal_code:             postal_code
+    prefecture:              prefecture
+    city_ward:               city_ward
+    town:                    town
+    address_line:            address_line
+    full_address:            full_address
+    bank_name:               bank_name
+    bank_branch:             bank_branch
+    bank_account_type:       bank_account_type
+    bank_account_number:     bank_account_number
+    bank_account_holder:     bank_account_holder
+    payment_terms_code:      payment_terms_code
+    payment_terms_days:      payment_terms_days
+    vendor_size:             vendor_size
+    annual_spend_net:        annual_spend_net
+    region_bucket:           region_bucket
+    country:                 country
+    active_flag:             active_flag

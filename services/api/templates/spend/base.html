@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="htmx-config" content='{"allowEval":true}'>
+  <title>Spend Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <style>
+    .sidebar-select {
+      width: 100%; padding: 6px 8px; border: 1px solid #d1d5db;
+      border-radius: 6px; font-size: 0.82rem; background: #fff;
+    }
+    .tab-btn {
+      padding: 8px 14px; border-radius: 6px 6px 0 0; cursor: pointer;
+      font-size: 0.82rem; white-space: nowrap; border: 1px solid transparent;
+      border-bottom: none; transition: background 0.15s;
+    }
+    .tab-btn.active {
+      background: #fff; border-color: #e5e7eb; color: #1d4ed8; font-weight: 600;
+    }
+    .tab-btn:not(.active) { background: #f3f4f6; color: #6b7280; }
+    .tab-btn:not(.active):hover { background: #e5e7eb; }
+    .kpi-card { background: #fff; border-radius: 8px; border: 1px solid #e5e7eb; padding: 14px 18px; }
+    .kpi-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 2px; }
+    .kpi-value { font-size: 1.35rem; font-weight: 700; color: #111827; }
+    table.data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    table.data-table th { background: #f9fafb; padding: 7px 10px; border-bottom: 2px solid #e5e7eb;
+                          text-align: left; white-space: nowrap; }
+    table.data-table td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; }
+    table.data-table tr:hover td { background: #f9fafb; }
+    .row-high td { background: #fee2e2 !important; }
+    .row-medium td { background: #fef3c7 !important; }
+    .htmx-indicator { display: none; }
+    .htmx-request .htmx-indicator { display: inline; }
+    #main-content.htmx-request { opacity: 0.5; transition: opacity 0.2s; }
+  </style>
+</head>
+<body class="bg-gray-50 flex h-screen overflow-hidden">
+
+  <!-- ───────────────── Sidebar ───────────────── -->
+  <aside class="w-72 flex-shrink-0 bg-white border-r border-gray-200 overflow-y-auto flex flex-col">
+    <div class="p-4 border-b border-gray-100">
+      <h1 class="text-base font-bold text-gray-800">📊 Spend Analytics</h1>
+    </div>
+    <form id="filter-form"
+          hx-get="/spend/dashboard"
+          hx-target="#main-content"
+          hx-trigger="change delay:300ms"
+          hx-include="this"
+          class="p-4 space-y-4 flex-1">
+
+      <input type="hidden" name="tab" id="active-tab" value="overview">
+
+      <!-- 期間 -->
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">データ期間</p>
+        <div class="flex gap-2">
+          <div class="flex-1">
+            <label class="text-xs text-gray-500">開始</label>
+            <input type="date" name="start" value="{{ start }}"
+                   class="sidebar-select mt-1">
+          </div>
+          <div class="flex-1">
+            <label class="text-xs text-gray-500">終了</label>
+            <input type="date" name="end" value="{{ end }}"
+                   class="sidebar-select mt-1">
+          </div>
+        </div>
+      </div>
+
+      <!-- コモディティ (cascading) -->
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">コモディティ</p>
+        <div class="space-y-2">
+          <!-- 大分類 -->
+          <div>
+            <label class="text-xs text-gray-500">大分類</label>
+            <select name="cats" multiple size="4"
+                    class="sidebar-select mt-1"
+                    hx-get="/spend/filters/medium"
+                    hx-target="#medium-opts"
+                    hx-trigger="change"
+                    hx-include="[name='cats']">
+              {% for opt in all_large %}
+              <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <!-- 中分類 -->
+          <div>
+            <label class="text-xs text-gray-500">中分類</label>
+            <select name="medium_cats" multiple size="4"
+                    id="medium-select"
+                    class="sidebar-select mt-1"
+                    hx-get="/spend/filters/small"
+                    hx-target="#small-opts"
+                    hx-trigger="change"
+                    hx-include="[name='cats'],[name='medium_cats']">
+              <optgroup id="medium-opts" label="">
+                {% for opt in all_medium %}
+                <option value="{{ opt }}">{{ opt }}</option>
+                {% endfor %}
+              </optgroup>
+            </select>
+          </div>
+          <!-- 小分類 -->
+          <div>
+            <label class="text-xs text-gray-500">小分類</label>
+            <select name="small_cats" multiple size="3"
+                    class="sidebar-select mt-1">
+              <optgroup id="small-opts" label="">
+                {% for opt in all_small %}
+                <option value="{{ opt }}">{{ opt }}</option>
+                {% endfor %}
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 購買属性 -->
+      <div>
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">購買属性</p>
+        <div class="space-y-2">
+          <div>
+            <label class="text-xs text-gray-500">部門</label>
+            <select name="depts" multiple size="4" class="sidebar-select mt-1">
+              {% for opt in all_depts %}
+              <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label class="text-xs text-gray-500">拠点</label>
+            <select name="sites" multiple size="3" class="sidebar-select mt-1">
+              {% for opt in all_sites %}
+              <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+    </form>
+    <div class="p-4 border-t border-gray-100 text-xs text-gray-400">
+      FastAPI + htmx
+    </div>
+  </aside>
+
+  <!-- ───────────────── Main ───────────────── -->
+  <main class="flex-1 overflow-y-auto">
+    <div id="main-content"
+         hx-get="/spend/dashboard?tab=overview"
+         hx-trigger="load"
+         hx-target="this"
+         class="p-6 min-h-full">
+      <div class="flex items-center justify-center h-40 text-gray-400">
+        <svg class="animate-spin h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        読込中...
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Keep active-tab hidden input in sync when tabs are clicked
+    // (used by the sidebar filter form so re-renders preserve the active tab)
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('[data-tab]');
+      if (btn) {
+        document.getElementById('active-tab').value = btn.dataset.tab;
+        // Optimistic highlight before htmx response
+        document.querySelectorAll('[data-tab]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+  </script>
+</body>
+</html>

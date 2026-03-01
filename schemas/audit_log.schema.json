@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:procurement-os:audit-log:v1",
+  "title": "AuditLogEvent",
+  "description": "Metadata-only audit log event. Content fields (text, prices, names) are strictly forbidden.",
+  "type": "object",
+  "required": ["request_id", "timestamp", "module", "action", "status", "version"],
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this request."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC timestamp (ISO 8601)."
+    },
+    "module": {
+      "type": "string",
+      "enum": ["spend", "rfx", "ocr", "ap", "audit", "ops"],
+      "description": "Module that generated this event."
+    },
+    "action": {
+      "type": "string",
+      "description": "Action performed (e.g. 'upload', 'parse', 'classify')."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error", "rejected"],
+      "description": "Outcome of the action."
+    },
+    "doc_hash": {
+      "type": ["string", "null"],
+      "description": "SHA-256 hex digest of the uploaded file. Never the file content."
+    },
+    "file_count": {
+      "type": ["integer", "null"],
+      "description": "Number of files processed."
+    },
+    "item_count": {
+      "type": ["integer", "null"],
+      "description": "Number of line items detected (count only, no content)."
+    },
+    "version": {
+      "type": "string",
+      "description": "Schema version string."
+    },
+    "error_code": {
+      "type": ["string", "null"],
+      "description": "Machine-readable error code when status is 'error'."
+    }
+  }
+}

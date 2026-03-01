@@ -1,0 +1,38 @@
+# Environment
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.uv/
+dist/
+*.egg-info/
+
+# Uploads / temp files — never commit document content
+uploads/
+tmp/
+*.pdf
+*.tiff
+*.tif
+
+# Exception: sample/dummy data used for development is safe to commit
+!data/samples/
+
+# Logs — audit logs may contain hashes; keep out of repo
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug / ad-hoc check files
+debug.txt
+match_check.txt
+pref_check.txt
+site_check.txt
+*.check.txt

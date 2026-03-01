@@ -1,0 +1,15 @@
+# OCR runtime config — loaded at runtime by proc_core.ocr, never hardcoded.
+
+engine: "stub"            # "stub" | "tesseract" | "azure_di" | "google_vision"
+language: "jpn+eng"
+dpi: 300
+
+output:
+  format: "text"          # "text" | "json" | "hocr"
+  include_confidence: true
+  include_layout: false   # layout may reveal document structure — keep false
+
+audit:
+  log_page_count: true
+  log_char_count: true
+  log_content: false      # MUST remain false — content is NEVER logged

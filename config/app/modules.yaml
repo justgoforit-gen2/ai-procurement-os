@@ -1,0 +1,22 @@
+# Module toggles — set enabled: true to activate a module.
+#
+# Kit mapping:
+#   Standard Kit:   spend
+#   Expansion Kit:  spend + rfx
+#   Automation Kit: spend + rfx + ocr
+#   Full Package:   spend + rfx + ocr + ap
+
+spend:
+  enabled: true
+
+rfx:
+  enabled: false
+
+ocr:
+  enabled: false
+
+ap:
+  enabled: false
+
+audit:
+  enabled: true

@@ -1,0 +1,34 @@
+[project]
+name = "procurement-os"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "streamlit>=1.35",
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "python-multipart>=0.0.9",
+    "pypdf>=4.0",
+    "plotly>=5.0",
+    "jinja2>=3.0",
+    "proc-core",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+    "playwright>=1.43",
+]
+
+[tool.uv.sources]
+proc-core = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/proc_core"]
+
+[tool.pyright]
+extraPaths = ["packages"]

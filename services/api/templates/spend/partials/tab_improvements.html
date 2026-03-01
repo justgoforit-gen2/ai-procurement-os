@@ -1,0 +1,28 @@
+<div class="kpi-card inline-block mb-4">
+  <div class="kpi-label">総推定節減額</div>
+  <div class="kpi-value">{{ total_saving }}</div>
+</div>
+
+{% if table %}
+<h2 class="text-base font-semibold text-gray-700 mb-3">ルール別 件数</h2>
+{{ chart | safe }}
+
+<hr class="my-5 border-gray-100">
+<h2 class="text-base font-semibold text-gray-700 mb-2">改善候補一覧 (priority順)</h2>
+<div class="overflow-auto max-h-96">
+  <table class="data-table">
+    <thead>
+      <tr>{% for col in table_cols %}<th>{{ col }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+      {% for row in table %}
+      <tr class="{% if row.get('priority') == 'HIGH' %}row-high{% elif row.get('priority') == 'MEDIUM' %}row-medium{% endif %}">
+        {% for col in table_cols %}<td>{{ row[col] }}</td>{% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-sm text-gray-400 mt-2">改善候補なし</p>
+{% endif %}

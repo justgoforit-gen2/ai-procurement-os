@@ -1,0 +1,42 @@
+<h2 class="text-base font-semibold text-gray-700 mb-3">サプライヤ Top10 シェア</h2>
+{{ chart | safe }}
+
+<div class="grid grid-cols-5 gap-3 mt-4">
+  <div class="kpi-card text-center">
+    <div class="kpi-label">Top1 シェア</div>
+    <div class="kpi-value text-lg">{{ top1 }}</div>
+  </div>
+  <div class="kpi-card text-center">
+    <div class="kpi-label">Top3 シェア</div>
+    <div class="kpi-value text-lg">{{ top3 }}</div>
+  </div>
+  <div class="kpi-card text-center">
+    <div class="kpi-label">Top5 シェア</div>
+    <div class="kpi-value text-lg">{{ top5 }}</div>
+  </div>
+  <div class="kpi-card text-center">
+    <div class="kpi-label">Top10 シェア</div>
+    <div class="kpi-value text-lg">{{ top10 }}</div>
+  </div>
+  <div class="kpi-card text-center">
+    <div class="kpi-label">HHI</div>
+    <div class="kpi-value text-lg">{{ hhi }}</div>
+  </div>
+</div>
+
+<hr class="my-5 border-gray-100">
+<h2 class="text-base font-semibold text-gray-700 mb-2">シングルソース カテゴリ</h2>
+{% if single_source %}
+<div class="overflow-auto max-h-48">
+  <table class="data-table">
+    <thead><tr><th>カテゴリ (中分類)</th></tr></thead>
+    <tbody>
+      {% for cat in single_source %}
+      <tr><td>{{ cat }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<p class="text-sm text-gray-400">シングルソースカテゴリなし</p>
+{% endif %}

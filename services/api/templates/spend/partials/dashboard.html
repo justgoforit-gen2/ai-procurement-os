@@ -1,0 +1,62 @@
+<!-- KPI bar -->
+<div class="grid grid-cols-4 gap-4 mb-6">
+  <div class="kpi-card">
+    <div class="kpi-label">総支出 (税抜)</div>
+    <div class="kpi-value">{{ kpis.total_spend }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">PO件数</div>
+    <div class="kpi-value">{{ kpis.po_count }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">サプライヤ数</div>
+    <div class="kpi-value">{{ kpis.supplier_count }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">平均PO金額</div>
+    <div class="kpi-value">{{ kpis.avg_po }}</div>
+  </div>
+</div>
+
+<!-- Tab bar -->
+{% set tabs = [
+  ("overview",       "Spend Overview"),
+  ("concentration",  "Concentration"),
+  ("price_variance", "Price Variance"),
+  ("compliance",     "Compliance"),
+  ("improvements",   "Improvements"),
+  ("map",            "Supplier Map"),
+  ("kpi",            "KPI管理"),
+] %}
+<div class="flex gap-1 border-b border-gray-200 mb-0 overflow-x-auto">
+  {% for tab_id, tab_label in tabs %}
+  <button type="button"
+          data-tab="{{ tab_id }}"
+          class="tab-btn {% if tab == tab_id %}active{% endif %}"
+          hx-get="/spend/dashboard?tab={{ tab_id }}&start={{ start }}&end={{ end }}{% for c in sel_cats %}&cats={{ c }}{% endfor %}{% for c in sel_medium %}&medium_cats={{ c }}{% endfor %}{% for c in sel_small %}&small_cats={{ c }}{% endfor %}{% for d in sel_depts %}&depts={{ d }}{% endfor %}{% for s in sel_sites %}&sites={{ s }}{% endfor %}"
+          hx-target="#main-content">
+    {{ tab_label }}
+  </button>
+  {% endfor %}
+</div>
+
+<!-- Tab panel -->
+<div class="bg-white border border-t-0 border-gray-200 rounded-b-lg p-5">
+
+{% if tab == "overview" %}
+  {% include "spend/partials/tab_overview.html" %}
+{% elif tab == "concentration" %}
+  {% include "spend/partials/tab_concentration.html" %}
+{% elif tab == "price_variance" %}
+  {% include "spend/partials/tab_price_variance.html" %}
+{% elif tab == "compliance" %}
+  {% include "spend/partials/tab_compliance.html" %}
+{% elif tab == "improvements" %}
+  {% include "spend/partials/tab_improvements.html" %}
+{% elif tab == "map" %}
+  {% include "spend/partials/tab_map.html" %}
+{% elif tab == "kpi" %}
+  {% include "spend/partials/tab_kpi.html" %}
+{% endif %}
+
+</div>

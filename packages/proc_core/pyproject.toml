@@ -1,0 +1,17 @@
+[project]
+name = "proc-core"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "pandas>=2.0",
+    "numpy>=1.26",
+]
+
+# Tell setuptools to look one level up (packages/) so it finds
+# proc_core as a single package with its sub-packages,
+# instead of treating audit/, spend/, etc. as top-level packages.
+[tool.setuptools.packages.find]
+where = [".."]
+include = ["proc_core*"]

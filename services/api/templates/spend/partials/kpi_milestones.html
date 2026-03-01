@@ -1,0 +1,40 @@
+<!-- 月次チャート -->
+{{ monthly_chart | safe }}
+
+<!-- マイルストーンテーブル -->
+<table class="data-table mt-4">
+  <thead>
+    <tr>
+      <th>月</th>
+      <th class="text-right">前年実績</th>
+      <th class="text-right">月次目標</th>
+      <th class="text-right">実績</th>
+      <th class="text-right">差異 (削減額)</th>
+      <th class="text-right">達成率</th>
+      <th class="text-center">ステータス</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in milestone_table %}
+    <tr class="{{ row.row_class }}">
+      <td class="font-medium">{{ row.month }}</td>
+      <td class="text-right text-gray-500">{{ row.baseline }}</td>
+      <td class="text-right text-green-700 font-medium">{{ row.target }}</td>
+      <td class="text-right font-medium">{{ row.actual }}</td>
+      <td class="text-right {% if row.variance_positive %}text-green-600{% else %}text-red-600{% endif %} font-medium">
+        {% if row.variance_positive %}▼ {{ row.variance }}{% else %}▲ {{ row.variance }}{% endif %}
+      </td>
+      <td class="text-right font-bold">{{ row.achievement_pct }}</td>
+      <td class="text-center text-xs">{{ row.status }}</td>
+    </tr>
+    {% endfor %}
+    {% if not milestone_table %}
+    <tr>
+      <td colspan="7" class="text-center text-gray-400 py-6">データがありません</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+<p class="text-xs text-gray-400 mt-2">
+  ▼ 差異プラス = 目標より低い支出 (削減達成) &nbsp;|&nbsp; ▲ 差異マイナス = 目標超過 (削減未達)
+</p>

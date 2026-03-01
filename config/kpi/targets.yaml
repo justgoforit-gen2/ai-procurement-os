@@ -1,0 +1,15 @@
+fiscal_year: 2026          # 今年度 (現在進行中)
+baseline_year: 2025        # 基準年度 (前年度)
+
+# 拠点毎の目標削減率
+sites:
+  本社（東京）:
+    target_rate: 0.05      # 5% 削減目標
+  名古屋拠点:
+    target_rate: 0.04      # 4% 削減目標
+  横浜オフィス:
+    target_rate: 0.05      # 5% 削減目標
+  関東物流センター:
+    target_rate: 0.06      # 6% 削減目標
+  関西物流センター:
+    target_rate: 0.05      # 5% 削減目標
