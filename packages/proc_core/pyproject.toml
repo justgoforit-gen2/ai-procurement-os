@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "proc-core"
 version = "0.1.0"
@@ -7,11 +11,15 @@ dependencies = [
     "pyyaml>=6.0",
     "pandas>=2.0",
     "numpy>=1.26",
+    "plotly>=5.0",
 ]
 
-# Tell setuptools to look one level up (packages/) so it finds
-# proc_core as a single package with its sub-packages,
-# instead of treating audit/, spend/, etc. as top-level packages.
+# pyproject.toml is inside packages/proc_core/ (= the package itself).
+# package-dir maps the proc_core namespace to "." so pip can find it
+# without traversing the parent directory (safe in PEP 517 build isolation).
+[tool.setuptools.package-dir]
+proc_core = "."
+
 [tool.setuptools.packages.find]
 where = [".."]
 include = ["proc_core*"]

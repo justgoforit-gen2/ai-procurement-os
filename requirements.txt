@@ -1,5 +1,7 @@
-# Streamlit app + proc_core dependencies
-# proc_core is a local package resolved via sys.path in app.py (no pip install needed)
+# Local package — installed by pip so imports work on Streamlit Cloud
+./packages/proc_core
+
+# App dependencies
 streamlit>=1.35
 pandas>=2.0
 numpy>=1.26
