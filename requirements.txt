@@ -1,0 +1,8 @@
+# Streamlit app + proc_core dependencies
+# proc_core is a local package resolved via sys.path in app.py (no pip install needed)
+streamlit>=1.35
+pandas>=2.0
+numpy>=1.26
+plotly>=5.0
+pyyaml>=6.0
+pydantic>=2.7
