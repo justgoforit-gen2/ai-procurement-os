@@ -40,8 +40,8 @@ po_transactions:
     supplier_name:           supplier_child_name
     supplier_parent_id:      supplier_parent_id
     supplier_parent_name:    supplier_parent_name
-    supplier_group_id:       supplier_grandparent_id
-    supplier_group_name:     supplier_grandparent_name
+    supplier_group_id:       supplier_child_id
+    supplier_group_name:     supplier_child_name
     item_code:               item_code
     cat_large_id:            item_cat_l_id
     cat_large_name:          item_cat_l_name

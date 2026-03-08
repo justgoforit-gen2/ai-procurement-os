@@ -58,9 +58,13 @@ def by_category(
         })
         results.append(row)
 
+    if not results:
+        cols = list(group_cols) + [
+            "n", "price_min", "price_max", "price_median",
+            "price_mean", "price_cv", "price_range_pct", "finding",
+        ]
+        return pd.DataFrame(columns=cols)
     df = pd.DataFrame(results)
-    if df.empty:
-        return df
     return df.sort_values("price_cv", ascending=False)
 
 

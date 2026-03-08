@@ -117,6 +117,14 @@ if "df_po_raw" not in st.session_state or load_btn:
 df_po_raw: pd.DataFrame = st.session_state["df_po_raw"]
 
 # ---------------------------------------------------------------------------
+# フィルタ初期化フラグ処理 — バージョンカウンタでキーを変えて強制再生成
+# ---------------------------------------------------------------------------
+if st.session_state.pop("_reset_filters", False):
+    st.session_state["_fv"] = st.session_state.get("_fv", 0) + 1
+
+_fv = st.session_state.get("_fv", 0)
+
+# ---------------------------------------------------------------------------
 # Sidebar multiselects — populated from loaded data
 # ---------------------------------------------------------------------------
 all_depts = sorted(df_po_raw["department_name"].dropna().unique().tolist()) if "department_name" in df_po_raw.columns else []
@@ -125,7 +133,7 @@ all_sites = sorted(df_po_raw["site_name"].dropna().unique().tolist()) if "site_n
 with st.sidebar:
     # --- 大分類 (always all options) ---
     all_large = sorted(df_po_raw["cat_large_name"].dropna().unique()) if "cat_large_name" in df_po_raw.columns else []
-    sel_cats = cat_large_placeholder.multiselect("大分類", options=all_large, default=[])
+    sel_cats = cat_large_placeholder.multiselect("大分類", options=all_large, default=[], key=f"sel_large_{_fv}")
 
     # --- 中分類 (cascade from 大分類) ---
     if "cat_medium_name" in df_po_raw.columns:
@@ -133,7 +141,7 @@ with st.sidebar:
         all_medium = sorted(df_for_med["cat_medium_name"].dropna().unique())
     else:
         all_medium = []
-    sel_medium_cats = cat_medium_placeholder.multiselect("中分類", options=all_medium, default=[])
+    sel_medium_cats = cat_medium_placeholder.multiselect("中分類", options=all_medium, default=[], key=f"sel_medium_{_fv}")
 
     # --- 小分類 (cascade from 大分類 + 中分類) ---
     if "cat_small_name" in df_po_raw.columns:
@@ -145,10 +153,10 @@ with st.sidebar:
         all_small = sorted(df_for_sml["cat_small_name"].dropna().unique())
     else:
         all_small = []
-    sel_small_cats = cat_small_placeholder.multiselect("小分類", options=all_small, default=[])
+    sel_small_cats = cat_small_placeholder.multiselect("小分類", options=all_small, default=[], key=f"sel_small_{_fv}")
 
-    sel_depts = dept_filter_placeholder.multiselect("部門", options=all_depts, default=[])
-    sel_sites = site_filter_placeholder.multiselect("拠点", options=all_sites, default=[])
+    sel_depts = dept_filter_placeholder.multiselect("部門", options=all_depts, default=[], key=f"sel_dept_{_fv}")
+    sel_sites = site_filter_placeholder.multiselect("拠点", options=all_sites, default=[], key=f"sel_site_{_fv}")
 
 # ---------------------------------------------------------------------------
 # Apply filters
@@ -262,22 +270,66 @@ with tab1:
     # Treemap — spend by category → supplier
     # -------------------------------------------------------------------
     st.markdown("---")
-    st.subheader("スペンドツリーマップ (カテゴリ → サプライヤ)")
+    _th_col, _btn_col = st.columns([5, 1])
+    _th_col.subheader("スペンドツリーマップ (大分類 → 中分類 → サプライヤ)")
+    if _btn_col.button("🔄 初期化", key="treemap_reset", use_container_width=True):
+        st.session_state["_reset_filters"] = True
+        st.rerun()
 
     _has_cat = "cat_large_name" in df_clean.columns
+    _has_med = "cat_medium_name" in df_clean.columns
     _has_sup = "supplier_parent_name" in df_clean.columns
 
-    if _has_cat and _has_sup:
+    if _has_cat and _has_med and _has_sup:
         df_tree = (
-            df_clean.groupby(["cat_large_name", "supplier_parent_name"], observed=True)["net_amount"]
+            df_clean.groupby(
+                ["cat_large_name", "cat_medium_name", "supplier_parent_name"], observed=True
+            )["net_amount"]
             .sum()
             .reset_index()
         )
+        # 中分類ごとのサプライヤ数で色分け: 1社=赤, 2社=オレンジ, 3社以上=茶色
+        _med_sup_count = (
+            df_clean.groupby("cat_medium_name", observed=True)["supplier_parent_name"].nunique()
+        )
+        def _tree_color(count: int) -> str:
+            if count == 1:
+                return "#FF4444"   # 赤: シングルソース
+            if count >= 3:
+                return "#8B4513"   # 茶色: 3社以上
+            return "#FFA040"       # オレンジ: 2社
+        _color_map = {med: _tree_color(int(cnt)) for med, cnt in _med_sup_count.items()}
+        df_tree["_color_key"] = df_tree["cat_medium_name"]
+        fig_tree = px.treemap(
+            df_tree,
+            path=[px.Constant("全体"), "cat_large_name", "cat_medium_name", "supplier_parent_name"],
+            values="net_amount",
+            color="_color_key",
+            color_discrete_map=_color_map,
+            custom_data=["net_amount"],
+        )
+        fig_tree.update_traces(
+            texttemplate="<b>%{label}</b><br>¥%{value:,.0f}",
+            hovertemplate="<b>%{label}</b><br>支出: ¥%{value:,.0f}<br>シェア: %{percentRoot:.1%}<extra></extra>",
+            textfont_size=12,
+        )
+        fig_tree.update_layout(height=580, margin={"l": 0, "r": 0, "t": 10, "b": 0})
+        _single_meds = sorted(_med_sup_count[_med_sup_count == 1].index.tolist())
+        st.caption("🔴 1社  🟠 2社  🟫 3社以上" + (
+            f"　　シングルソース中分類: {', '.join(_single_meds)}" if _single_meds else ""
+        ))
+        st.plotly_chart(fig_tree, use_container_width=True)
+    elif _has_cat and _has_sup:
+        # cat_medium_name がない場合は大分類のみ
+        df_tree = (
+            df_clean.groupby(["cat_large_name", "supplier_parent_name"], observed=True)["net_amount"]
+            .sum().reset_index()
+        )
+        df_tree["_color_key"] = df_tree["cat_large_name"]
         fig_tree = px.treemap(
             df_tree,
             path=[px.Constant("全体"), "cat_large_name", "supplier_parent_name"],
-            values="net_amount",
-            color="cat_large_name",
+            values="net_amount", color="_color_key",
             color_discrete_sequence=px.colors.qualitative.Pastel,
             custom_data=["net_amount"],
         )
@@ -295,26 +347,110 @@ with tab1:
 # Tab 2: Concentration
 # ===========================================================================
 with tab2:
-    conc = supplier_concentration(df_clean)
-    ranked = conc["ranked_df"].head(10).reset_index(drop=True)
+    # NOTE: KPIの「サプライヤ数」は supplier_id のユニーク数。
+    # ここも同じ粒度(supplier_id)で集中度を見る。
+    SUPPLIER_LEVEL_COL = "supplier_id"
 
-    st.subheader("サプライヤ Top10 シェア")
+    conc = supplier_concentration(df_clean, level=SUPPLIER_LEVEL_COL)
+    ranked_all = conc["ranked_df"].reset_index(drop=True)  # 全サプライヤ
+    n_total = len(ranked_all)
+
+    # 表示は上位N社に限定（全量だと可読性が落ちるため）
+    DISPLAY_TOP_N_SUPPLIERS = 50
+    ranked = ranked_all.head(DISPLAY_TOP_N_SUPPLIERS).copy()
+    n_plot = len(ranked)
+
+    # 80% ラインを超える最初のサプライヤ位置を特定
+    _80_idx = int((ranked_all["cumulative_pct"] >= 80).idxmax()) if (ranked_all["cumulative_pct"] >= 80).any() else max(n_total - 1, 0)
+    _80_sup_count = _80_idx + 1
+    _80_sup = ranked_all.loc[_80_idx, SUPPLIER_LEVEL_COL] if n_total else ""
+
+    # ヘッダー + 目立つ80%メトリクス
+    _hcol1, _hcol2 = st.columns([3, 1])
+    _hcol1.subheader(f"サプライヤ集中度 (全{n_total}社 / 表示上位{n_plot}社)")
+    _hcol2.metric(
+        label="購入額80%到達社数",
+        value=f"{_80_sup_count} 社 / {n_total} 社",
+        help=f"上位{_80_sup_count}社で全購入額の80%に達します",
+    )
+
+    if n_total > n_plot and _80_idx >= n_plot:
+        st.caption(f"※ 購入額80%到達点（上位{_80_sup_count}社）は表示範囲（上位{n_plot}社）の外です")
+
+    _idx_for_plot = min(_80_idx, max(n_plot - 1, 0))
+    bar_colors = ["#1f77b4" if i <= _idx_for_plot else "#c8c8c8" for i in range(n_plot)]
     fig_conc = go.Figure()
     fig_conc.add_trace(go.Bar(
-        x=ranked["supplier_group_name"], y=ranked["share_pct"],
-        name="シェア (%)", marker_color="#1f77b4",
+        x=ranked[SUPPLIER_LEVEL_COL], y=ranked["share_pct"],
+        name="シェア (%)", marker_color=bar_colors,
     ))
     fig_conc.add_trace(go.Scatter(
-        x=ranked["supplier_group_name"], y=ranked["cumulative_pct"],
+        x=ranked[SUPPLIER_LEVEL_COL], y=ranked["cumulative_pct"],
         name="累積シェア (%)", yaxis="y2", mode="lines+markers",
         line={"color": "#d62728", "width": 2},
+        marker={"size": 4},
     ))
+    # 80% 水平ライン
+    fig_conc.add_shape(
+        type="line",
+        xref="paper", x0=0, x1=1,
+        yref="y2", y0=80, y1=80,
+        line={"color": "#ff7f0e", "width": 2, "dash": "dash"},
+    )
+    fig_conc.add_annotation(
+        xref="paper", x=1.01, yref="y2", y=80,
+        text="80%", showarrow=False,
+        font={"color": "#ff7f0e", "size": 12},
+        xanchor="left",
+    )
+    # 80%到達ラインの垂直マーカー（表示範囲内の場合のみ）
+    if _80_idx < n_plot:
+        fig_conc.add_shape(
+            type="line",
+            xref="x", x0=_80_sup, x1=_80_sup,
+            yref="paper", y0=0, y1=1,
+            line={"color": "#ff7f0e", "width": 2, "dash": "dot"},
+        )
+        fig_conc.add_annotation(
+            xref="x", x=_80_sup, yref="paper", y=1.0,
+            text=f"{_80_sup_count}社で80%",
+            showarrow=True, arrowhead=2, arrowcolor="#ff7f0e",
+            ax=30, ay=-20,
+            font={"color": "#ff7f0e", "size": 11},
+            xanchor="left",
+        )
     fig_conc.update_layout(
         yaxis={"title": "シェア (%)"},
-        yaxis2={"title": "累積シェア (%)", "overlaying": "y", "side": "right", "range": [0, 100]},
-        xaxis_tickangle=-35, height=380, legend={"orientation": "h"},
+        yaxis2={"title": "累積シェア (%)", "overlaying": "y", "side": "right", "range": [0, 105]},
+        xaxis={"tickangle": -60, "tickfont": {"size": 9}},
+        height=520,
+        legend={"orientation": "h", "y": -0.25},
+        margin={"r": 60, "b": 120},
+    )
+
+    # x軸カテゴリ（上位50社）を全て表示する（Plotlyの自動間引きを無効化）
+    df_suppliers_raw: pd.DataFrame = st.session_state.get("df_suppliers", pd.DataFrame())
+    if not df_suppliers_raw.empty and {"supplier_id", "supplier_parent_name"}.issubset(df_suppliers_raw.columns):
+        _id_to_label = (
+            df_suppliers_raw[["supplier_id", "supplier_parent_name"]]
+            .drop_duplicates("supplier_id")
+            .set_index("supplier_id")["supplier_parent_name"]
+            .to_dict()
+        )
+    else:
+        _id_to_label = {}
+
+    _ticks = ranked[SUPPLIER_LEVEL_COL].tolist()
+    _ticktext = [str(_id_to_label.get(i, i)) for i in _ticks]
+    fig_conc.update_xaxes(
+        type="category",
+        tickmode="array",
+        tickvals=_ticks,
+        ticktext=_ticktext,
+        showticklabels=True,
     )
     st.plotly_chart(fig_conc, use_container_width=True)
+    st.caption(f"🔵 青: 80%到達までの上位{_80_sup_count}社　⬜ 灰: それ以降　🟠 点線: 累積80%ライン")
 
     m1, m2, m3, m4, m5 = st.columns(5)
     m1.metric("Top1 シェア", f"{conc['top1_share']:.1f}%")
@@ -325,11 +461,93 @@ with tab2:
 
     st.markdown("---")
     st.subheader("シングルソース カテゴリ")
-    ss = conc["single_source_categories"]
-    if ss:
-        _show_table(pd.DataFrame({"cat_medium_name": ss}))
+    # NOTE: ツリーマップの「赤(1社)」と定義を揃える。
+    # cat_medium_name ごとに supplier_parent_name のユニーク数が 1 のものをシングルソース扱いにする。
+    if {"cat_medium_name", "supplier_parent_name"}.issubset(df_clean.columns):
+        ss_med = (
+            df_clean.groupby("cat_medium_name", observed=True)["supplier_parent_name"]
+            .nunique()
+        )
+        ss_list = sorted(ss_med[ss_med == 1].index.tolist())
+        if ss_list:
+            ss_base = df_clean[df_clean["cat_medium_name"].isin(ss_list)].copy()
+
+            group_col = None
+            if "supplier_group_name" in ss_base.columns:
+                group_col = "supplier_group_name"
+            elif "supplier_group" in ss_base.columns:
+                group_col = "supplier_group"
+
+            group_keys: list[str] = ["cat_medium_name", "supplier_parent_name"]
+            if "cat_large_name" in ss_base.columns:
+                group_keys.insert(0, "cat_large_name")
+            if group_col is not None:
+                group_keys.append(group_col)
+
+            ss_tbl = (
+                ss_base.groupby(group_keys, observed=True)["net_amount"]
+                .sum()
+                .reset_index()
+                .reset_index(drop=True)
+            )
+
+            # ---- Sort UI (HTML table has no interactive sorting) ----
+            sort_options: dict[str, tuple[list[str], list[bool]]] = {
+                "金額（降順）": (["net_amount"], [False]),
+                "金額（昇順）": (["net_amount"], [True]),
+                "Supplier名（昇順）": (["supplier_parent_name", "net_amount"], [True, False]),
+                "中分類（昇順）": (["cat_medium_name", "net_amount"], [True, False]),
+            }
+            if "cat_large_name" in ss_tbl.columns:
+                sort_options["大分類（昇順）"] = (["cat_large_name", "net_amount"], [True, False])
+            if group_col is not None and group_col in ss_tbl.columns:
+                sort_options["グループ名（昇順）"] = ([group_col, "net_amount"], [True, False])
+
+            sort_label = st.selectbox(
+                "ソート",
+                options=list(sort_options.keys()),
+                index=0,
+                key="ss_sort",
+            )
+            sort_cols, sort_asc = sort_options[sort_label]
+            ss_tbl = ss_tbl.sort_values(sort_cols, ascending=sort_asc).reset_index(drop=True)
+
+            ss_tbl["amount_yen"] = ss_tbl["net_amount"].map(lambda v: f"\u00a5{v:,.0f}")
+            show_cols = [c for c in ["cat_large_name", "cat_medium_name", "supplier_parent_name", group_col, "amount_yen"] if c and c in ss_tbl.columns]
+            _show_table(ss_tbl[show_cols])
+
+            # ---- Subtotals ----
+            show_subtotal = st.checkbox("小計を表示", value=True, key="ss_show_subtotal")
+            if show_subtotal:
+                if "cat_large_name" in ss_tbl.columns:
+                    sub_key = "cat_large_name"
+                    label = "大分類"
+                else:
+                    sub_key = "cat_medium_name"
+                    label = "中分類"
+
+                sub_tbl = (
+                    ss_tbl.groupby(sub_key, observed=True)["net_amount"]
+                    .sum()
+                    .reset_index()
+                    .sort_values("net_amount", ascending=False)
+                    .reset_index(drop=True)
+                )
+                sub_tbl["amount_yen"] = sub_tbl["net_amount"].map(lambda v: f"\u00a5{v:,.0f}")
+                st.caption(f"小計（{label}別）")
+                _show_table(sub_tbl[[sub_key, "amount_yen"]].rename(columns={sub_key: label}))
+
+                grand_total = float(ss_tbl["net_amount"].sum())
+                st.caption(f"総計: \u00a5{grand_total:,.0f}")
+        else:
+            st.info("シングルソースカテゴリなし")
     else:
-        st.info("シングルソースカテゴリなし")
+        # fallback: 列がない場合は proc_core の結果をそのまま出す
+        ss = conc.get("single_source_categories", [])
+        if ss:
+            _show_table(pd.DataFrame({"cat_medium_name": ss}))
+        else:
+            st.info("シングルソースカテゴリなし")
 
 # ===========================================================================
 # Tab 3: Price Variance
@@ -350,7 +568,7 @@ with tab3:
         st.plotly_chart(fig_pv, use_container_width=True)
 
     st.subheader("詳細テーブル (CV > 0.3)")
-    high_cv = pv[pv["price_cv"] > 0.30].reset_index(drop=True)
+    high_cv = pv[pv["price_cv"] > 0.30].reset_index(drop=True) if "price_cv" in pv.columns else pd.DataFrame()
     if not high_cv.empty:
         _show_table(high_cv)
     else:

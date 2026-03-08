@@ -33,7 +33,7 @@ def mine(df: pd.DataFrame) -> pd.DataFrame:
 
     # IM-01: Price dispersion
     pv = price_by_cat(df, cv_threshold=0.30)
-    for _, r in pv[pv["price_cv"] > 0.30].iterrows():
+    for _, r in (pv[pv["price_cv"] > 0.30] if "price_cv" in pv.columns else pv).iterrows():
         cat = r.get("cat_small_name", r.get("cat_small_id", ""))
         saving = (r["price_median"] - r["price_min"]) * df[
             df.get("cat_small_id", pd.Series()) == r.get("cat_small_id", None)
