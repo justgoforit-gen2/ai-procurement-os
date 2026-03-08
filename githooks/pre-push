@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -eu
+
+# Pre-push secret scan (repo-local script)
+# - Blocks push if obvious secrets are detected.
+# - Does not print full secret values (script redacts matches).
+
+run_scan() {
+  if command -v python >/dev/null 2>&1; then
+    python scripts/security_scan.py
+    return $?
+  fi
+
+  # Windows Git Bash often has the Python launcher.
+  if command -v py >/dev/null 2>&1; then
+    py -3 scripts/security_scan.py
+    return $?
+  fi
+
+  echo "[pre-push] ERROR: Python not found (need python or py -3)" >&2
+  return 2
+}
+
+run_scan

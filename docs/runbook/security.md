@@ -20,3 +20,33 @@
 ## Secrets
 - Never commit `.env` files.
 - Use `.env.example` as the template and populate a real `.env` locally.
+
+## Pre-push secret scan (recommended)
+To make the check repeatable (and not rely on memory), this repo provides a lightweight scan script and a Git `pre-push` hook.
+
+### 1) Install the pre-push hook (Windows / PowerShell)
+From the repo root:
+
+```powershell
+pwsh -File scripts/install_git_hooks.ps1
+```
+
+After this, every `git push` will run `scripts/security_scan.py` and will fail the push if it finds obvious secrets.
+
+### 2) Run the scan manually
+
+```powershell
+python scripts/security_scan.py
+```
+
+### 3) GitHub code search (quick spot-check)
+In GitHub search (Code), you can use queries like:
+
+- `repo:justgoforit-gen2/ai-procurement-os AKIA`
+- `repo:justgoforit-gen2/ai-procurement-os "BEGIN OPENSSH PRIVATE KEY"`
+- `repo:justgoforit-gen2/ai-procurement-os ghp_`
+- `repo:justgoforit-gen2/ai-procurement-os sk-`
+
+If anything sensitive is found:
+- Rotate/revoke the credential immediately.
+- Remove it from the repo history if it was committed.
