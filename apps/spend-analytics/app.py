@@ -104,6 +104,8 @@ def _load(data_dir: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     return load_all(data_dir, mapping="default", config_root=PROJECT_ROOT)
 
 
+if load_btn:
+    _load.clear()  # キャッシュをクリアして最新のyaml設定で再読込
 if "df_po_raw" not in st.session_state or load_btn:
     try:
         df_po_raw, df_items, df_suppliers = _load(str(DATA_DIR))
@@ -347,9 +349,8 @@ with tab1:
 # Tab 2: Concentration
 # ===========================================================================
 with tab2:
-    # NOTE: KPIの「サプライヤ数」は supplier_id のユニーク数。
-    # ここも同じ粒度(supplier_id)で集中度を見る。
-    SUPPLIER_LEVEL_COL = "supplier_id"
+    # supplier_name = supplier_child_name (50社) で集中度を見る
+    SUPPLIER_LEVEL_COL = "supplier_name"
 
     conc = supplier_concentration(df_clean, level=SUPPLIER_LEVEL_COL)
     ranked_all = conc["ranked_df"].reset_index(drop=True)  # 全サプライヤ
@@ -428,25 +429,13 @@ with tab2:
         margin={"r": 60, "b": 120},
     )
 
-    # x軸カテゴリ（上位50社）を全て表示する（Plotlyの自動間引きを無効化）
-    df_suppliers_raw: pd.DataFrame = st.session_state.get("df_suppliers", pd.DataFrame())
-    if not df_suppliers_raw.empty and {"supplier_id", "supplier_parent_name"}.issubset(df_suppliers_raw.columns):
-        _id_to_label = (
-            df_suppliers_raw[["supplier_id", "supplier_parent_name"]]
-            .drop_duplicates("supplier_id")
-            .set_index("supplier_id")["supplier_parent_name"]
-            .to_dict()
-        )
-    else:
-        _id_to_label = {}
-
+    # x軸: supplier_group_name は既に名前なのでそのまま表示
     _ticks = ranked[SUPPLIER_LEVEL_COL].tolist()
-    _ticktext = [str(_id_to_label.get(i, i)) for i in _ticks]
     fig_conc.update_xaxes(
         type="category",
         tickmode="array",
         tickvals=_ticks,
-        ticktext=_ticktext,
+        ticktext=_ticks,
         showticklabels=True,
     )
     st.plotly_chart(fig_conc, use_container_width=True)
