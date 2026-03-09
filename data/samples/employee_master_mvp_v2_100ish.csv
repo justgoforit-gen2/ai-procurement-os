@@ -1,0 +1,105 @@
+﻿employee_id,employee_name,email,phone_ext,phone_direct,site,department,job_title,job_level,manager_employee_id,cost_center,rfq_role,commodity_responsibility,active,start_date
+E0001,上田 泰弘,user002@example.co.jp,1002,+81-3-5555-1002,Tokyo HQ,Executive,President / CEO,Exec,,CC-1000,Approver,ALL,True,2020-06-05
+E0002,鈴木 健太,user003@example.co.jp,1003,+81-3-5555-1003,Tokyo HQ,Finance,CFO,Exec,E0001,CC-1100,Approver,ALL,True,2020-07-21
+E0003,高橋 直樹,user004@example.co.jp,1004,+81-3-5555-1004,Tokyo HQ,Operations,COO,Exec,E0001,CC-1200,Approver,ALL,True,2020-01-03
+E0004,渡辺 舞,user005@example.co.jp,1005,+81-3-5555-1005,Tokyo HQ,Procurement,CPO / Head of Procurement,Exec,E0001,CC-2000,Approver,ALL,True,2020-09-04
+E0005,伊藤 彩,user006@example.co.jp,1006,+81-3-5555-1006,Tokyo HQ,IT,CIO,Exec,E0001,CC-1300,Approver,ALL,True,2020-06-19
+E0006,山本 美奈,user007@example.co.jp,1007,+81-3-5555-1007,Tokyo HQ,HR,CHRO,Exec,E0001,CC-1400,Approver,ALL,True,2020-01-17
+E0007,吉田 玲奈,user008@example.co.jp,1008,+81-3-5555-1008,Tokyo HQ,Procurement,Procurement Director,Director,E0004,CC-2001,Approver,ALL,True,2021-04-02
+E0008,山田 咲,user009@example.co.jp,1009,+81-3-5555-1009,Tokyo HQ,Procurement,Sourcing Manager (RFQ Ops),Manager,E0007,CC-2002,Buyer,ALL,True,2022-02-14
+E0009,山口 小春,user010@example.co.jp,1010,+81-3-5555-1010,Tokyo HQ,Finance,Finance Director,Director,E0002,CC-1101,Approver,ALL,True,2021-07-03
+E0010,松本 美咲,user011@example.co.jp,1011,+81-3-5555-1011,Tokyo HQ,IT,IT Director,Director,E0005,CC-1301,Approver,ALL,True,2021-04-03
+E0011,井上 結衣,user012@example.co.jp,1012,+81-3-5555-1012,Tokyo HQ,Operations,Operations Director,Director,E0003,CC-1201,Approver,ALL,True,2021-09-14
+E0012,木村 剛,user013@example.co.jp,1013,+81-3-5555-1013,Tokyo HQ,General Affairs,GA Director,Director,E0003,CC-1601,Approver,ALL,True,2021-01-27
+E0013,林 涼,user014@example.co.jp,1014,+81-3-5555-1014,Tokyo HQ,Marketing,Marketing Director,Director,E0003,CC-1501,Approver,ALL,True,2021-10-04
+E0014,清水 陽翔,user015@example.co.jp,1015,+81-3-5555-1015,Tokyo HQ,Sales,Sales Director,Director,E0003,CC-1701,Approver,ALL,True,2021-04-21
+E0015,橋本 優奈,user016@example.co.jp,1016,+81-3-5555-1016,Yokohama Site,Operations,Site Manager,Manager,E0011,CC-1202,Approver,ALL,True,2022-11-19
+E0016,森 陸,user017@example.co.jp,1017,+81-3-5555-1017,Osaka Office,Operations,Site Manager,Manager,E0011,CC-1202,Approver,ALL,True,2022-01-19
+E0017,藤田 翔太,user018@example.co.jp,1018,+81-3-5555-1018,Nagoya Office,Operations,Site Manager,Manager,E0011,CC-1202,Approver,ALL,True,2022-10-13
+E0018,岡田 星奈,user019@example.co.jp,1019,+81-3-5555-1019,Fukuoka Office,Operations,Site Manager,Manager,E0011,CC-1202,Approver,ALL,True,2022-01-08
+E0019,山田 涼,user020@example.co.jp,1020,+81-3-5555-1020,Tokyo HQ,Procurement,RFQ Owner (Category) - IT - Hardware,Manager,E0007,CC-2010,Buyer,IT - Hardware,True,2022-01-18
+E0020,山口 陽翔,user021@example.co.jp,1021,+81-3-5555-1021,Tokyo HQ,Procurement,RFQ Owner (Category) - IT - Software,Manager,E0007,CC-2011,Buyer,IT - Software,True,2022-03-10
+E0021,松本 蒼太,user022@example.co.jp,1022,+81-3-5555-1022,Tokyo HQ,Procurement,RFQ Owner (Category) - IT - Cloud/SaaS,Manager,E0007,CC-2012,Buyer,IT - Cloud/SaaS,True,2022-07-05
+E0022,井上 香穂,user023@example.co.jp,1023,+81-3-5555-1023,Tokyo HQ,Procurement,RFQ Owner (Category) - IT - Security,Manager,E0007,CC-2013,Buyer,IT - Security,True,2022-09-04
+E0023,木村 優奈,user024@example.co.jp,1024,+81-3-5555-1024,Tokyo HQ,Procurement,RFQ Owner (Category) - Logistics - 3PL,Manager,E0007,CC-2014,Buyer,Logistics - 3PL,True,2022-10-10
+E0024,林 陸,user025@example.co.jp,1025,+81-3-5555-1025,Tokyo HQ,Procurement,RFQ Owner (Category) - Logistics - Parcel,Manager,E0007,CC-2015,Buyer,Logistics - Parcel,True,2022-09-27
+E0025,清水 翔太,user026@example.co.jp,1026,+81-3-5555-1026,Tokyo HQ,Procurement,RFQ Owner (Category) - Logistics - Warehousing,Lead,E0007,CC-2016,Buyer,Logistics - Warehousing,True,2023-11-06
+E0026,阿部 星奈,user027@example.co.jp,1027,+81-3-5555-1027,Tokyo HQ,Procurement,RFQ Owner (Category) - Marketing - Agencies,Lead,E0007,CC-2017,Buyer,Marketing - Agencies,True,2023-02-19
+E0027,池田 太郎,user028@example.co.jp,1028,+81-3-5555-1028,Tokyo HQ,Procurement,RFQ Owner (Category) - Marketing - Media/Digital,Lead,E0007,CC-2018,Buyer,Marketing - Media/Digital,True,2023-10-21
+E0028,橋本 友紀,user029@example.co.jp,1029,+81-3-5555-1029,Tokyo HQ,Procurement,RFQ Owner (Category) - MRO - Office Supplies,Lead,E0007,CC-2019,Buyer,MRO - Office Supplies,True,2023-04-12
+E0029,森 健太,user030@example.co.jp,1030,+81-3-5555-1030,Tokyo HQ,Procurement,RFQ Owner (Category) - MRO - Tools/Consumables,Lead,E0007,CC-2020,Buyer,MRO - Tools/Consumables,True,2023-09-23
+E0030,藤田 直樹,user031@example.co.jp,1031,+81-3-5555-1031,Tokyo HQ,Procurement,RFQ Owner (Category) - Facilities - FM,Lead,E0007,CC-2021,Buyer,Facilities - FM,True,2023-10-02
+E0031,岡田 舞,user032@example.co.jp,1032,+81-3-5555-1032,Nagoya Office,Procurement,RFQ Owner (Category) - Facilities - Cleaning/Security,Lead,E0007,CC-2022,Buyer,Facilities - Cleaning/Security,True,2023-04-16
+E0032,石川 彩,user033@example.co.jp,1033,+81-3-5555-1033,Nagoya Office,Procurement,RFQ Owner (Category) - Professional Services - Consulting,Lead,E0007,CC-2023,Buyer,Professional Services - Consulting,True,2023-09-14
+E0033,中島 美奈,user034@example.co.jp,1034,+81-3-5555-1034,Osaka Office,Procurement,RFQ Owner (Category) - Professional Services - Legal/Tax,Lead,E0007,CC-2024,Buyer,Professional Services - Legal/Tax,True,2023-08-19
+E0034,林 直美,user035@example.co.jp,1035,+81-3-5555-1035,Tokyo HQ,Procurement,Buyer,Senior,E0008,CC-2020,Buyer,ALL,True,2024-08-12
+E0035,清水 潤,user036@example.co.jp,1036,+81-3-5555-1036,Yokohama Site,Procurement,Buyer,Senior,E0008,CC-2020,Buyer,ALL,True,2024-05-08
+E0036,阿部 七海,user037@example.co.jp,1037,+81-3-5555-1037,Osaka Office,Procurement,Buyer,Senior,E0008,CC-2020,Buyer,ALL,True,2024-03-23
+E0037,池田 玲奈,user038@example.co.jp,1038,+81-3-5555-1038,Nagoya Office,Procurement,Buyer,Senior,E0008,CC-2020,Buyer,ALL,True,2024-04-03
+E0038,橋本 咲,user039@example.co.jp,1039,+81-3-5555-1039,Fukuoka Office,Procurement,Buyer,Senior,E0008,CC-2020,Buyer,ALL,True,2024-10-10
+E0039,藤田 潤,user040@example.co.jp,1040,+81-3-5555-1040,Tokyo HQ,Procurement,Procurement Analyst (Spend),Senior,E0008,CC-2021,Analyst,ALL,True,2024-09-16
+E0040,松本 七海,user041@example.co.jp,1041,+81-3-5555-1041,Tokyo HQ,Finance,AP Specialist,Senior,E0009,CC-1110,Requester,ALL,True,2024-06-24
+E0041,木村 咲,user042@example.co.jp,1042,+81-3-5555-1042,Tokyo HQ,IT,IT Support,Senior,E0010,CC-1310,Requester,IT - Hardware,True,2024-08-10
+E0042,清水 美咲,user043@example.co.jp,1043,+81-3-5555-1043,Tokyo HQ,General Affairs,Office Administrator,Senior,E0012,CC-1610,Requester,MRO - Office Supplies,True,2024-10-03
+E0043,林 小春,user044@example.co.jp,1044,+81-3-5555-1044,Yokohama Site,Finance,AP Specialist,Senior,E0009,CC-1110,Requester,ALL,True,2024-02-17
+E0044,阿部 結衣,user045@example.co.jp,1045,+81-3-5555-1045,Yokohama Site,IT,IT Support,Senior,E0010,CC-1310,Requester,IT - Hardware,True,2024-07-06
+E0045,橋本 涼,user046@example.co.jp,1046,+81-3-5555-1046,Yokohama Site,General Affairs,Office Administrator,Senior,E0012,CC-1610,Requester,MRO - Office Supplies,True,2024-06-05
+E0046,池田 剛,user047@example.co.jp,1047,+81-3-5555-1047,Osaka Office,Finance,AP Specialist,Senior,E0009,CC-1110,Requester,ALL,True,2024-08-14
+E0047,森 陽翔,user048@example.co.jp,1048,+81-3-5555-1048,Osaka Office,IT,IT Support,Senior,E0010,CC-1310,Requester,IT - Hardware,True,2024-01-22
+E0048,岡田 香穂,user049@example.co.jp,1049,+81-3-5555-1049,Osaka Office,General Affairs,Office Administrator,Senior,E0012,CC-1610,Requester,MRO - Office Supplies,True,2024-02-25
+E0049,藤田 蒼太,user050@example.co.jp,1050,+81-3-5555-1050,Nagoya Office,Finance,AP Specialist,Senior,E0009,CC-1110,Requester,ALL,True,2024-09-19
+E0050,石川 優奈,user051@example.co.jp,1051,+81-3-5555-1051,Nagoya Office,IT,IT Support,Senior,E0010,CC-1310,Requester,IT - Hardware,True,2024-06-11
+E0051,小川 翔太,user052@example.co.jp,1052,+81-3-5555-1052,Nagoya Office,General Affairs,Office Administrator,Senior,E0012,CC-1610,Requester,MRO - Office Supplies,True,2024-12-12
+E0052,中島 陸,user053@example.co.jp,1053,+81-3-5555-1053,Fukuoka Office,Finance,AP Specialist,Senior,E0009,CC-1110,Requester,ALL,True,2024-10-16
+E0053,前田 星奈,user054@example.co.jp,1054,+81-3-5555-1054,Fukuoka Office,IT,IT Support,Senior,E0010,CC-1310,Requester,IT - Hardware,True,2024-10-26
+E0054,佐藤 友紀,user055@example.co.jp,1055,+81-3-5555-1055,Fukuoka Office,General Affairs,Office Administrator,Senior,E0012,CC-1610,Requester,MRO - Office Supplies,True,2024-08-03
+E0055,佐藤 美奈,user056@example.co.jp,1056,+81-3-5555-1056,Tokyo HQ,Operations,Logistics Planner,Senior,E0011,CC-1200,Requester,Logistics - 3PL,True,2024-02-09
+E0056,田中 直美,user057@example.co.jp,1057,+81-3-5555-1057,Tokyo HQ,Operations,Warehouse Supervisor,Senior,E0011,CC-1200,Requester,Logistics - Warehousing,True,2024-08-23
+E0057,鈴木 潤,user058@example.co.jp,1058,+81-3-5555-1058,Tokyo HQ,Operations,Operations Coordinator,Staff,E0011,CC-1200,Requester,Logistics - Parcel,True,2025-11-03
+E0058,高橋 七海,user059@example.co.jp,1059,+81-3-5555-1059,Tokyo HQ,Marketing,Brand Manager,Manager,E0013,CC-1500,Requester,Marketing - Agencies,True,2022-01-24
+E0059,渡辺 玲奈,user060@example.co.jp,1060,+81-3-5555-1060,Tokyo HQ,Marketing,Digital Marketing Lead,Lead,E0013,CC-1500,Requester,Marketing - Media/Digital,True,2023-12-10
+E0060,伊藤 咲,user061@example.co.jp,1061,+81-3-5555-1061,Tokyo HQ,Sales,Sales Manager,Manager,E0014,CC-1700,Requester,ALL,True,2022-11-19
+E0061,山本 小春,user062@example.co.jp,1062,+81-3-5555-1062,Tokyo HQ,Sales,Sales Coordinator,Staff,E0014,CC-1700,Requester,ALL,True,2025-11-27
+E0062,中村 美咲,user063@example.co.jp,1063,+81-3-5555-1063,Yokohama Site,Operations,Logistics Planner,Senior,E0015,CC-1200,Requester,Logistics - 3PL,True,2024-08-10
+E0063,小林 結衣,user064@example.co.jp,1064,+81-3-5555-1064,Yokohama Site,Operations,Warehouse Supervisor,Senior,E0015,CC-1200,Requester,Logistics - Warehousing,True,2024-12-13
+E0064,加藤 剛,user065@example.co.jp,1065,+81-3-5555-1065,Yokohama Site,Operations,Operations Coordinator,Staff,E0015,CC-1200,Requester,Logistics - Parcel,True,2025-11-12
+E0065,吉田 涼,user066@example.co.jp,1066,+81-3-5555-1066,Yokohama Site,Marketing,Brand Manager,Manager,E0013,CC-1500,Requester,Marketing - Agencies,True,2022-01-15
+E0066,山田 陽翔,user067@example.co.jp,1067,+81-3-5555-1067,Yokohama Site,Marketing,Digital Marketing Lead,Lead,E0013,CC-1500,Requester,Marketing - Media/Digital,True,2023-06-06
+E0067,山口 蒼太,user068@example.co.jp,1068,+81-3-5555-1068,Yokohama Site,Sales,Sales Manager,Manager,E0014,CC-1700,Requester,ALL,True,2022-10-04
+E0068,松本 香穂,user069@example.co.jp,1069,+81-3-5555-1069,Yokohama Site,Sales,Sales Coordinator,Staff,E0014,CC-1700,Requester,ALL,True,2025-08-02
+E0069,井上 優奈,user070@example.co.jp,1070,+81-3-5555-1070,Osaka Office,Operations,Logistics Planner,Senior,E0016,CC-1200,Requester,Logistics - 3PL,True,2024-04-25
+E0070,木村 陸,user071@example.co.jp,1071,+81-3-5555-1071,Osaka Office,Operations,Warehouse Supervisor,Senior,E0016,CC-1200,Requester,Logistics - Warehousing,True,2024-05-05
+E0071,林 翔太,user072@example.co.jp,1072,+81-3-5555-1072,Osaka Office,Operations,Operations Coordinator,Staff,E0016,CC-1200,Requester,Logistics - Parcel,True,2025-12-08
+E0072,清水 星奈,user073@example.co.jp,1073,+81-3-5555-1073,Osaka Office,Marketing,Brand Manager,Manager,E0013,CC-1500,Requester,Marketing - Agencies,True,2022-07-13
+E0073,阿部 太郎,user074@example.co.jp,1074,+81-3-5555-1074,Osaka Office,Marketing,Digital Marketing Lead,Lead,E0013,CC-1500,Requester,Marketing - Media/Digital,True,2023-08-03
+E0074,池田 友紀,user075@example.co.jp,1075,+81-3-5555-1075,Osaka Office,Sales,Sales Manager,Manager,E0014,CC-1700,Requester,ALL,True,2022-03-15
+E0075,橋本 健太,user076@example.co.jp,1076,+81-3-5555-1076,Osaka Office,Sales,Sales Coordinator,Staff,E0014,CC-1700,Requester,ALL,True,2025-07-18
+E0076,森 直樹,user077@example.co.jp,1077,+81-3-5555-1077,Nagoya Office,Operations,Logistics Planner,Senior,E0017,CC-1200,Requester,Logistics - 3PL,True,2024-05-05
+E0077,藤田 舞,user078@example.co.jp,1078,+81-3-5555-1078,Nagoya Office,Operations,Warehouse Supervisor,Senior,E0017,CC-1200,Requester,Logistics - Warehousing,True,2024-07-28
+E0078,岡田 彩,user079@example.co.jp,1079,+81-3-5555-1079,Nagoya Office,Operations,Operations Coordinator,Staff,E0017,CC-1200,Requester,Logistics - Parcel,True,2025-09-09
+E0079,石川 美奈,user080@example.co.jp,1080,+81-3-5555-1080,Nagoya Office,Marketing,Brand Manager,Manager,E0013,CC-1500,Requester,Marketing - Agencies,True,2022-12-14
+E0080,中島 直美,user081@example.co.jp,1081,+81-3-5555-1081,Nagoya Office,Marketing,Digital Marketing Lead,Lead,E0013,CC-1500,Requester,Marketing - Media/Digital,True,2023-06-22
+E0081,小川 潤,user082@example.co.jp,1082,+81-3-5555-1082,Nagoya Office,Sales,Sales Manager,Manager,E0014,CC-1700,Requester,ALL,True,2022-07-08
+E0082,前田 七海,user083@example.co.jp,1083,+81-3-5555-1083,Nagoya Office,Sales,Sales Coordinator,Staff,E0014,CC-1700,Requester,ALL,True,2025-03-03
+E0083,福田 玲奈,user084@example.co.jp,1084,+81-3-5555-1084,Fukuoka Office,Operations,Logistics Planner,Senior,E0018,CC-1200,Requester,Logistics - 3PL,True,2024-03-05
+E0084,佐藤 咲,user085@example.co.jp,1085,+81-3-5555-1085,Fukuoka Office,Operations,Warehouse Supervisor,Senior,E0018,CC-1200,Requester,Logistics - Warehousing,True,2024-04-22
+E0085,田中 小春,user086@example.co.jp,1086,+81-3-5555-1086,Fukuoka Office,Operations,Operations Coordinator,Staff,E0018,CC-1200,Requester,Logistics - Parcel,True,2025-04-01
+E0086,鈴木 美咲,user087@example.co.jp,1087,+81-3-5555-1087,Fukuoka Office,Marketing,Brand Manager,Manager,E0013,CC-1500,Requester,Marketing - Agencies,True,2022-08-27
+E0087,高橋 結衣,user088@example.co.jp,1088,+81-3-5555-1088,Fukuoka Office,Marketing,Digital Marketing Lead,Lead,E0013,CC-1500,Requester,Marketing - Media/Digital,True,2023-10-06
+E0088,渡辺 剛,user089@example.co.jp,1089,+81-3-5555-1089,Fukuoka Office,Sales,Sales Manager,Manager,E0014,CC-1700,Requester,ALL,True,2022-05-10
+E0089,伊藤 涼,user090@example.co.jp,1090,+81-3-5555-1090,Fukuoka Office,Sales,Sales Coordinator,Staff,E0014,CC-1700,Requester,ALL,True,2025-01-05
+E0090,福田 友紀,user091@example.co.jp,1091,+81-3-5555-1091,Tokyo HQ,HR,HRBP,Manager,E0006,CC-1400,Requester,ALL,True,2022-07-18
+E0091,佐藤 健太,user092@example.co.jp,1092,+81-3-5555-1092,Tokyo HQ,HR,Recruiter,Senior,E0006,CC-1400,Requester,ALL,True,2024-06-20
+E0092,田中 直樹,user093@example.co.jp,1093,+81-3-5555-1093,Tokyo HQ,HR,HR Coordinator,Staff,E0006,CC-1400,Requester,ALL,True,2025-10-11
+E0093,木村 潤,user094@example.co.jp,1094,+81-3-5555-1094,Tokyo HQ,Finance,FP&A Analyst,Senior,E0009,CC-1112,Requester,ALL,True,2024-03-23
+E0094,林 七海,user095@example.co.jp,1095,+81-3-5555-1095,Tokyo HQ,IT,Data/BI Engineer,Senior,E0010,CC-1312,Requester,IT - Software,True,2024-09-20
+E0095,清水 玲奈,user096@example.co.jp,1096,+81-3-5555-1096,Tokyo HQ,General Affairs,Legal Counsel,Lead,E0012,CC-1612,Approver,Professional Services - Legal/Tax,True,2023-11-22
+E0096,阿部 咲,user097@example.co.jp,1097,+81-3-5555-1097,Osaka Office,Operations,Quality Supervisor,Senior,E0016,CC-1203,Requester,ALL,True,2024-12-02
+E0097,池田 小春,user098@example.co.jp,1098,+81-3-5555-1098,Nagoya Office,Operations,Maintenance Lead,Lead,E0017,CC-1203,Requester,Facilities - FM,True,2023-08-28
+E0098,橋本 美咲,user099@example.co.jp,1099,+81-3-5555-1099,Fukuoka Office,Operations,Safety Coordinator,Staff,E0018,CC-1203,Requester,ALL,True,2025-11-26
+E0099,森 結衣,user100@example.co.jp,1100,+81-3-5555-1100,Yokohama Site,IT,Security Liaison,Lead,E0010,CC-1313,Requester,IT - Security,True,2023-09-13
+E0100,藤田 剛,user101@example.co.jp,1101,+81-3-5555-1101,Tokyo HQ,Procurement,Supplier Relationship Manager,Lead,E0007,CC-2030,Buyer,ALL,True,2023-07-13
+E0101,岡田 涼,user102@example.co.jp,1102,+81-3-5555-1102,Tokyo HQ,Procurement,Contracting Specialist,Senior,E0008,CC-2031,Buyer,Professional Services - Legal/Tax,True,2024-07-04
+E0102,石川 陽翔,user103@example.co.jp,1103,+81-3-5555-1103,Tokyo HQ,Marketing,Events Manager,Senior,E0013,CC-1502,Requester,Marketing - Print/Events,True,2024-08-21
+E0103,中島 蒼太,user104@example.co.jp,1104,+81-3-5555-1104,Tokyo HQ,Sales,Key Account Lead,Lead,E0014,CC-1702,Requester,ALL,True,2023-07-02
+E0104,小川 香穂,user105@example.co.jp,1105,+81-3-5555-1105,Tokyo HQ,Operations,Inventory Control Lead,Lead,E0011,CC-1205,Requester,MRO - Tools/Consumables,True,2023-04-03
