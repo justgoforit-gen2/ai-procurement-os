@@ -131,7 +131,13 @@ emp_label_to_name:  dict[str, str] = {}
 emp_label_to_id:    dict[str, str] = {}
 
 if not df_emp.empty and "employee_name" in df_emp.columns:
-    active_emp = df_emp if "active" not in df_emp.columns else df_emp[df_emp["active"].astype(str).str.lower() == "true"]
+    # active 列は CSV由来なら "True"/"False"、SQLite由来なら 1/0 になる
+    if "active" not in df_emp.columns:
+        active_emp = df_emp
+    else:
+        def _is_active(v) -> bool:
+            return str(v).strip().lower() in ("true", "1", "yes")
+        active_emp = df_emp[df_emp["active"].apply(_is_active)]
     for _, row in active_emp.iterrows():
         label = _emp_label(row)
         emp_all_opts.append(label)
