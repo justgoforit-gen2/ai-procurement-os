@@ -32,6 +32,11 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+nul
+
+# SQLite databases (runtime data — not for version control)
+data/*.db
+*.db
 
 # Debug / ad-hoc check files
 debug.txt
