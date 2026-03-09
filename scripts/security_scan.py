@@ -12,6 +12,7 @@ Exit code:
 
 from __future__ import annotations
 
+import argparse
 import re
 import subprocess
 import sys
@@ -62,19 +63,32 @@ def _run(cmd: list[str]) -> str:
     return subprocess.check_output(cmd, text=True, stderr=subprocess.STDOUT).strip()
 
 
-def _repo_root() -> Path:
-    root = _run(["git", "rev-parse", "--show-toplevel"])
+def _run_git(repo_root: Path, args: list[str]) -> str:
+    cmd = ["git", "-C", str(repo_root), *args]
+    return _run(cmd)
+
+
+def _repo_root_from_arg(repo_root: str | None) -> Path:
+    # Default: current working directory's repository.
+    if not repo_root:
+        root = _run(["git", "rev-parse", "--show-toplevel"])
+        return Path(root)
+
+    candidate = Path(repo_root).expanduser().resolve()
+    root = _run_git(candidate, ["rev-parse", "--show-toplevel"])
     return Path(root)
 
 
-def _tracked_files() -> list[Path]:
-    out = _run(["git", "ls-files"])
+def _tracked_files(repo_root: Path) -> list[Path]:
+    out = _run_git(repo_root, ["ls-files"])
     paths = [Path(p) for p in out.splitlines() if p.strip()]
     return paths
 
 
 def _should_scan(path: Path) -> bool:
     name = path.name.lower()
+    if name == "security_scan.py":
+        return False
     if name in {"uv.lock"}:
         return False
 
@@ -106,10 +120,22 @@ def _check_forbidden_tracked_files(tracked: set[str]) -> list[str]:
     return sorted(forbidden.intersection(tracked))
 
 
-def main() -> int:
+def _parse_args(argv: list[str]) -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Lightweight secret scan (git tracked files).")
+    p.add_argument(
+        "--repo-root",
+        default=None,
+        help="Path to the git repository to scan (default: current repo)",
+    )
+    return p.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
     try:
-        root = _repo_root()
-        files = _tracked_files()
+        args = _parse_args(list(argv or sys.argv[1:]))
+
+        root = _repo_root_from_arg(args.repo_root)
+        files = _tracked_files(root)
 
         tracked_set = {str(p).replace("\\", "/") for p in files}
         forbidden_hits = _check_forbidden_tracked_files(tracked_set)
