@@ -1,0 +1,173 @@
+# import_tables.yaml
+# CSV → SQLite (data/procurement.db) 取込仕様設定
+# version: 1.0 / 2026-03-09
+#
+# 各テーブルの設定:
+#   file_pattern : data/samples/ 以下を検索するglobパターン
+#   table_name   : SQLiteテーブル名（スネークケース）
+#   primary_key  : 主キー列（複合キーの場合はリスト）
+#   date_cols    : 日付列（ISO変換対象）
+#   numeric_cols : 数値列（文字→floatへ変換）
+#   bool_cols    : 真偽値列（True/False/1/0/Yes/No を統一）
+#   column_map   : CSVカラム名 → SQLiteカラム名 のマッピング
+#                  （column_map/default.yaml と重複する場合はこちらが優先）
+#   required_cols: 必須列（NULL不可チェック対象）
+# -----------------------------------------------------------------------
+
+po_transactions:
+  file_pattern: "po_transactions*.csv"
+  table_name: po_transactions
+  primary_key:
+    - po_number
+    - po_line
+  date_cols:
+    - posting_date
+  numeric_cols:
+    - quantity
+    - unit_price
+    - net_amount
+    - tax_amount
+    - gross_amount
+  bool_cols:
+    - contract_flag
+  required_cols:
+    - po_number
+    - po_line
+    - posting_date
+    - net_amount
+  column_map:
+    po_number:             po_number
+    po_line:               po_line
+    posting_date:          posting_date
+    company_code:          company_code
+    site_id:               site_id
+    site_name:             site_name
+    department_id:         department_id
+    department_name:       department_name
+    cost_center:           cost_center
+    supplier_id:           supplier_child_id
+    supplier_name:         supplier_child_name
+    supplier_parent_id:    supplier_parent_id
+    supplier_parent_name:  supplier_parent_name
+    supplier_group_id:     supplier_grandparent_id
+    supplier_group_name:   supplier_grandparent_name
+    item_code:             item_code
+    cat_large_id:          item_cat_l_id
+    cat_large_name:        item_cat_l_name
+    cat_medium_id:         item_cat_m_id
+    cat_medium_name:       item_cat_m_name
+    cat_small_id:          item_cat_s_id
+    cat_small_name:        item_cat_s_name
+    uom:                   uom
+    quantity:              quantity
+    unit_price:            unit_price
+    net_amount:            net_amount
+    currency:              currency
+    payment_terms:         payment_terms
+    buyer:                 buyer
+    contract_flag:         contract_flag
+    purchasing_channel:    purchasing_channel
+    tax_amount:            tax_amount
+    gross_amount:          gross_amount
+
+items_master:
+  file_pattern: "items_master*.csv"
+  table_name: items_master
+  primary_key:
+    - item_code
+  date_cols: []
+  numeric_cols:
+    - tax_rate
+  bool_cols: []
+  required_cols:
+    - item_code
+  column_map:
+    item_code:      item_code
+    cat_large_id:   item_cat_l_id
+    cat_large_name: item_cat_l_name
+    cat_medium_id:  item_cat_m_id
+    cat_medium_name: item_cat_m_name
+    cat_small_id:   item_cat_s_id
+    cat_small_name: item_cat_s_name
+    uom:            uom
+    tax_rate:       tax_rate
+
+suppliers_master:
+  file_pattern: "suppliers_master*.csv"
+  table_name: suppliers_master
+  primary_key:
+    - supplier_id
+  date_cols: []
+  numeric_cols:
+    - payment_terms_days
+    - annual_spend_net
+  bool_cols:
+    - active_flag
+  required_cols:
+    - supplier_id
+    - supplier_name
+  column_map:
+    supplier_id:           supplier_child_id
+    supplier_name:         supplier_child_name
+    supplier_parent_id:    supplier_parent_id
+    supplier_parent_name:  supplier_parent_name
+    supplier_group_id:     supplier_grandparent_id
+    supplier_group_name:   supplier_grandparent_name
+    contact_person:        contact_person
+    contact_role:          contact_role
+    contact_email:         contact_email
+    postal_code:           postal_code
+    prefecture:            prefecture
+    city_ward:             city_ward
+    town:                  town
+    address_line:          address_line
+    full_address:          full_address
+    bank_name:             bank_name
+    bank_branch:           bank_branch
+    bank_account_type:     bank_account_type
+    bank_account_number:   bank_account_number
+    bank_account_holder:   bank_account_holder
+    payment_terms_code:    payment_terms_code
+    payment_terms_days:    payment_terms_days
+    vendor_size:           vendor_size
+    annual_spend_net:      annual_spend_net
+    region_bucket:         region_bucket
+    country:               country
+    active_flag:           active_flag
+
+employee_master:
+  file_pattern: "employee_master*.csv"
+  table_name: employee_master
+  primary_key:
+    - employee_id
+  date_cols:
+    - start_date
+  numeric_cols:
+    - phone_ext
+  bool_cols:
+    - active
+  required_cols:
+    - employee_id
+    - employee_name
+  column_map:
+    employee_id:              employee_id
+    employee_name:            employee_name
+    email:                    email
+    phone_ext:                phone_ext
+    phone_direct:             phone_direct
+    site:                     site
+    department:               department
+    job_title:                job_title
+    job_level:                job_level
+    manager_employee_id:      manager_employee_id
+    cost_center:              cost_center
+    rfq_role:                 rfq_role
+    commodity_responsibility: commodity_responsibility
+    active:                   active
+    start_date:               start_date
+
+# quality_master は将来追加予定（PoCではスキップ）
+# quality_master:
+#   file_pattern: "quality_master*.csv"
+#   table_name: quality_master
+#   ...

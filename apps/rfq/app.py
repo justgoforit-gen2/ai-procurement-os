@@ -58,8 +58,30 @@ init_db()
 # ---------------------------------------------------------------------------
 # マスターデータ読込
 # ---------------------------------------------------------------------------
+PROCUREMENT_DB = PROJECT_ROOT / "data" / "procurement.db"
+
 @st.cache_data(show_spinner=False)
 def _load_masters() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """
+    マスターデータを読み込む。
+    procurement.db があればSQLiteから、なければCSVフォールバック。
+    """
+    import sqlite3 as _sqlite3
+    if PROCUREMENT_DB.exists():
+        try:
+            conn = _sqlite3.connect(str(PROCUREMENT_DB))
+            tables_q = "SELECT name FROM sqlite_master WHERE type='table'"
+            tables = [r[0] for r in conn.execute(tables_q).fetchall()]
+            df_po  = pd.read_sql_query("SELECT * FROM po_transactions", conn) if "po_transactions" in tables else pd.DataFrame()
+            df_sup = pd.read_sql_query("SELECT * FROM suppliers_master", conn) if "suppliers_master" in tables else pd.DataFrame()
+            df_emp = pd.read_sql_query("SELECT * FROM employee_master",  conn) if "employee_master"  in tables else pd.DataFrame()
+            conn.close()
+            if not df_po.empty:
+                return df_po, df_sup, df_emp
+        except Exception:
+            pass
+
+    # フォールバック: CSV直読み
     po_file  = sorted(DATA_DIR.glob("po_transactions*.csv"))
     sup_file = sorted(DATA_DIR.glob("suppliers_master*.csv"))
     emp_file = sorted(DATA_DIR.glob("employee_master*.csv"))
