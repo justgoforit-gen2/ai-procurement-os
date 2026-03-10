@@ -38,6 +38,12 @@ nul
 data/*.db
 *.db
 
+# Generated output files (Excel/CSV templates — binary, not for version control)
+output/
+
+# Test screenshots
+*.png
+
 # Debug / ad-hoc check files
 debug.txt
 match_check.txt

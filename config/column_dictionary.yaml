@@ -1,0 +1,154 @@
+# column_dictionary.yaml
+# 全カラムの辞書定義 — SQLite格納・DB設計・バリデーション用
+# version: 1.0 / 2026-03-10
+# -----------------------------------------------------------------------
+
+# ------------------------------------------------------------------
+# rfq_header テーブル（案件ヘッダ）
+# ------------------------------------------------------------------
+rfq_header:
+  table_description: RFQ案件ヘッダ（rfq_projects から参照）
+  columns:
+    rfq_id:           {dtype: TEXT,    pk: true,  label_ja: RFQ番号}
+    rfq_name:         {dtype: TEXT,    pk: false, label_ja: 案件名}
+    commodity_group:  {dtype: TEXT,    pk: false, label_ja: 大分類}
+    commodity_subgroup: {dtype: TEXT,  pk: false, label_ja: 中分類}
+    buyer:            {dtype: TEXT,    pk: false, label_ja: 購買担当者}
+    requester:        {dtype: TEXT,    pk: false, label_ja: 起案者}
+    budget:           {dtype: REAL,    pk: false, label_ja: 予算上限}
+    deadline:         {dtype: TEXT,    pk: false, label_ja: 回答期限}
+    status:           {dtype: TEXT,    pk: false, label_ja: ステータス}
+
+# ------------------------------------------------------------------
+# quotation_header テーブル（見積ヘッダ）
+# ------------------------------------------------------------------
+quotation_header:
+  table_description: 回収した見積のヘッダ情報
+  columns:
+    quotation_id:     {dtype: TEXT,    pk: true,  label_ja: 見積番号}
+    rfq_id:           {dtype: TEXT,    pk: false, label_ja: RFQ番号,     fk: rfq_header.rfq_id}
+    supplier_id:      {dtype: TEXT,    pk: false, label_ja: サプライヤーID}
+    supplier_name:    {dtype: TEXT,    pk: false, label_ja: サプライヤー名}
+    quotation_date:   {dtype: TEXT,    pk: false, label_ja: 見積日}
+    valid_until:      {dtype: TEXT,    pk: false, label_ja: 有効期限}
+    currency:         {dtype: TEXT,    pk: false, label_ja: 通貨,         default: JPY}
+    total_amount:     {dtype: REAL,    pk: false, label_ja: 合計金額}
+    payment_terms:    {dtype: TEXT,    pk: false, label_ja: 支払条件}
+    contract_term:    {dtype: TEXT,    pk: false, label_ja: 契約期間}
+    lead_time:        {dtype: INTEGER, pk: false, label_ja: リードタイム日}
+    start_date:       {dtype: TEXT,    pk: false, label_ja: 開始日}
+    end_date:         {dtype: TEXT,    pk: false, label_ja: 終了日}
+    trade_terms:      {dtype: TEXT,    pk: false, label_ja: 取引条件}
+    remarks:          {dtype: TEXT,    pk: false, label_ja: 備考}
+    evaluation_comment: {dtype: TEXT,  pk: false, label_ja: 評価コメント}
+
+# ------------------------------------------------------------------
+# quotation_line テーブル（見積明細）
+# ------------------------------------------------------------------
+quotation_line:
+  table_description: 回収した見積の明細行（共通コア + コモディティ拡張）
+  columns:
+    # 共通コア
+    id:               {dtype: INTEGER, pk: true,  label_ja: 明細ID, autoincrement: true}
+    quotation_id:     {dtype: TEXT,    pk: false, label_ja: 見積番号, fk: quotation_header.quotation_id}
+    rfq_id:           {dtype: TEXT,    pk: false, label_ja: RFQ番号}
+    line_no:          {dtype: INTEGER, pk: false, label_ja: 明細番号}
+    item_category:    {dtype: TEXT,    pk: false, label_ja: 品目カテゴリ}
+    item_name:        {dtype: TEXT,    pk: false, label_ja: 品目名}
+    specification:    {dtype: TEXT,    pk: false, label_ja: 仕様}
+    quantity:         {dtype: REAL,    pk: false, label_ja: 数量}
+    unit:             {dtype: TEXT,    pk: false, label_ja: 単位}
+    unit_price:       {dtype: REAL,    pk: false, label_ja: 単価}
+    line_amount:      {dtype: REAL,    pk: false, label_ja: 金額}
+    tax_included_flag: {dtype: INTEGER, pk: false, label_ja: 税込フラグ}
+    location:         {dtype: TEXT,    pk: false, label_ja: 拠点}
+    service_scope:    {dtype: TEXT,    pk: false, label_ja: サービス範囲}
+    # マーケティング拡張
+    media_cost:             {dtype: REAL,    pk: false, label_ja: 媒体費,        commodity: マーケティング}
+    production_cost:        {dtype: REAL,    pk: false, label_ja: 制作費,        commodity: マーケティング}
+    operation_fee:          {dtype: REAL,    pk: false, label_ja: 運用費,        commodity: マーケティング}
+    campaign_period:        {dtype: INTEGER, pk: false, label_ja: キャンペーン期間週, commodity: マーケティング}
+    expected_leads:         {dtype: INTEGER, pk: false, label_ja: 見込みリード数, commodity: マーケティング}
+    expected_impression:    {dtype: INTEGER, pk: false, label_ja: インプレッション数, commodity: マーケティング}
+    expected_click:         {dtype: INTEGER, pk: false, label_ja: クリック数,    commodity: マーケティング}
+    cpa_estimate:           {dtype: REAL,    pk: false, label_ja: CPA見込,       commodity: マーケティング}
+    reporting_frequency:    {dtype: TEXT,    pk: false, label_ja: レポーティング頻度, commodity: マーケティング}
+    creative_count:         {dtype: INTEGER, pk: false, label_ja: クリエイティブ本数, commodity: マーケティング}
+    # ビジネスサービス拡張
+    fte_count:              {dtype: REAL,    pk: false, label_ja: FTE数,          commodity: ビジネスサービス}
+    transaction_volume:     {dtype: INTEGER, pk: false, label_ja: 月間処理件数,   commodity: ビジネスサービス}
+    working_hours:          {dtype: REAL,    pk: false, label_ja: 月間稼働時間,   commodity: ビジネスサービス}
+    holiday_support_flag:   {dtype: INTEGER, pk: false, label_ja: 祝日対応,       commodity: ビジネスサービス}
+    multilingual_support_flag: {dtype: INTEGER, pk: false, label_ja: 多言語対応,  commodity: ビジネスサービス}
+    turnaround_time:        {dtype: REAL,    pk: false, label_ja: TAT時間,        commodity: ビジネスサービス}
+    kpi_target:             {dtype: TEXT,    pk: false, label_ja: KPI目標,        commodity: ビジネスサービス}
+    training_cost:          {dtype: REAL,    pk: false, label_ja: 研修費,         commodity: ビジネスサービス}
+    setup_cost:             {dtype: REAL,    pk: false, label_ja: 導入費,         commodity: ビジネスサービス}
+    sop_flag:               {dtype: INTEGER, pk: false, label_ja: SOP有無,        commodity: ビジネスサービス}
+    # リテールプロモ拡張
+    store_count:            {dtype: INTEGER, pk: false, label_ja: 店舗数,         commodity: リテールプロモ}
+    fixture_unit_cost:      {dtype: REAL,    pk: false, label_ja: 什器単価,       commodity: リテールプロモ}
+    installation_cost:      {dtype: REAL,    pk: false, label_ja: 施工費,         commodity: リテールプロモ}
+    maintenance_visit_frequency: {dtype: REAL, pk: false, label_ja: 保守巡回月,  commodity: リテールプロモ}
+    area_size:              {dtype: REAL,    pk: false, label_ja: 売場面積m2,     commodity: リテールプロモ}
+    store_type:             {dtype: TEXT,    pk: false, label_ja: 店舗形態,       commodity: リテールプロモ}
+    dispatch_count:         {dtype: INTEGER, pk: false, label_ja: 派遣回数,       commodity: リテールプロモ}
+    travel_cost:            {dtype: REAL,    pk: false, label_ja: 交通費,         commodity: リテールプロモ}
+    emergency_support_flag: {dtype: INTEGER, pk: false, label_ja: 緊急対応,       commodity: リテールプロモ}
+    # SCM（Logistics）拡張
+    shipment_count:         {dtype: INTEGER, pk: false, label_ja: 配送回数月,     commodity: SCM}
+    route_type:             {dtype: TEXT,    pk: false, label_ja: ルート区分,     commodity: SCM}
+    origin:                 {dtype: TEXT,    pk: false, label_ja: 出発地,         commodity: SCM}
+    destination:            {dtype: TEXT,    pk: false, label_ja: 目的地,         commodity: SCM}
+    distance_km:            {dtype: REAL,    pk: false, label_ja: 距離km,         commodity: SCM}
+    weight_band:            {dtype: TEXT,    pk: false, label_ja: 重量帯kg,       commodity: SCM}
+    volume_m3:              {dtype: REAL,    pk: false, label_ja: 容積m3,         commodity: SCM}
+    warehouse_fee:          {dtype: REAL,    pk: false, label_ja: 保管料,         commodity: SCM}
+    handling_fee:           {dtype: REAL,    pk: false, label_ja: 荷役費,         commodity: SCM}
+    emergency_delivery_flag: {dtype: INTEGER, pk: false, label_ja: 緊急配送,      commodity: SCM}
+    leadtime_service_level: {dtype: REAL,    pk: false, label_ja: SLAリードタイム時間, commodity: SCM}
+    # IT拡張
+    license_count:          {dtype: INTEGER, pk: false, label_ja: ライセンス数,   commodity: IT}
+    user_count:             {dtype: INTEGER, pk: false, label_ja: ユーザー数,     commodity: IT}
+    monthly_fee:            {dtype: REAL,    pk: false, label_ja: 月額費用,       commodity: IT}
+    annual_fee:             {dtype: REAL,    pk: false, label_ja: 年額費用,       commodity: IT}
+    initial_cost:           {dtype: REAL,    pk: false, label_ja: 初期費用,       commodity: IT}
+    implementation_support_fee: {dtype: REAL, pk: false, label_ja: 導入支援費,   commodity: IT}
+    maintenance_fee:        {dtype: REAL,    pk: false, label_ja: 保守費年額,     commodity: IT}
+    sla_level:              {dtype: TEXT,    pk: false, label_ja: SLAレベル,      commodity: IT}
+    response_time:          {dtype: REAL,    pk: false, label_ja: 障害対応時間h,  commodity: IT}
+    environment_type:       {dtype: TEXT,    pk: false, label_ja: 環境区分,       commodity: IT}
+    security_requirement:   {dtype: TEXT,    pk: false, label_ja: セキュリティ要件, commodity: IT}
+
+# ------------------------------------------------------------------
+# benchmark_definition_master テーブル
+# ------------------------------------------------------------------
+benchmark_definition_master:
+  table_description: ベンチマーク指標定義マスター
+  columns:
+    id:                {dtype: INTEGER, pk: true}
+    commodity_group:   {dtype: TEXT,    pk: false, label_ja: 大分類}
+    metric_key:        {dtype: TEXT,    pk: false, label_ja: 指標キー}
+    metric_name:       {dtype: TEXT,    pk: false, label_ja: 指標名}
+    numerator_column:  {dtype: TEXT,    pk: false, label_ja: 分子カラム}
+    denominator_column: {dtype: TEXT,   pk: false, label_ja: 分母カラム}
+    formula:           {dtype: TEXT,    pk: false, label_ja: 計算式}
+    display_unit:      {dtype: TEXT,    pk: false, label_ja: 表示単位}
+    description:       {dtype: TEXT,    pk: false, label_ja: 説明}
+
+# ------------------------------------------------------------------
+# commodity_template_master テーブル
+# ------------------------------------------------------------------
+commodity_template_master:
+  table_description: コモディティテンプレート定義マスター
+  columns:
+    id:                {dtype: INTEGER, pk: true}
+    commodity_group:   {dtype: TEXT,    pk: false, label_ja: 大分類}
+    name_en:           {dtype: TEXT,    pk: false, label_ja: 英語キー}
+    column_name:       {dtype: TEXT,    pk: false, label_ja: カラム名}
+    label_ja:          {dtype: TEXT,    pk: false, label_ja: 日本語ラベル}
+    dtype:             {dtype: TEXT,    pk: false, label_ja: データ型}
+    required:          {dtype: INTEGER, pk: false, label_ja: 必須フラグ}
+    is_core:           {dtype: INTEGER, pk: false, label_ja: 共通コアフラグ}
+    sort_order:        {dtype: INTEGER, pk: false, label_ja: 列順}
+    description:       {dtype: TEXT,    pk: false, label_ja: 説明}

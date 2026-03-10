@@ -445,10 +445,26 @@ with tab_new_rfq:
             st.success("✅ 自動添付（全案件に自動付与）")
         with col_doc3:
             st.markdown("**見積明細フォーマット**")
-            if sel_mid:
-                st.success(f"✅ 自動生成（{sel_mid}用）")
+            if sel_large:
+                # generate_quote_template を動的インポート
+                try:
+                    _scripts_path = str(PROJECT_ROOT / "scripts")
+                    if _scripts_path not in sys.path:
+                        sys.path.insert(0, _scripts_path)
+                    from generate_quote_template import generate_excel_bytes
+                    _xlsx = generate_excel_bytes(sel_large, rfq_name=project_name)
+                    st.download_button(
+                        label=f"⬇ Excelテンプレ ({sel_large})",
+                        data=_xlsx,
+                        file_name=f"quote_template_{sel_large}.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        key="f_template_dl",
+                    )
+                    st.caption(f"✅ {sel_large}用テンプレート（3シート構成）")
+                except Exception as _e:
+                    st.caption(f"テンプレート生成エラー: {_e}")
             else:
-                st.caption("中分類を選択すると自動生成されます")
+                st.caption("大分類を選択するとダウンロードできます")
 
         st.markdown("---")
 

@@ -1,0 +1,137 @@
+# benchmark_definitions.yaml
+# コモディティ群ごとのベンチマーク指標定義
+# version: 1.0 / 2026-03-10
+#
+# 各指標:
+#   metric_name      : 指標名（日本語）
+#   metric_key       : 英語キー（DB・コード用）
+#   numerator_column : 分子カラム（commodity_templates.yaml のカラム名）
+#   denominator_column: 分母カラム
+#   formula          : 計算式の説明
+#   display_unit     : 表示単位
+#   description      : 用途説明
+# -----------------------------------------------------------------------
+
+benchmarks:
+
+  # ── マーケティング ────────────────────────────────────────────────
+  marketing:
+    - metric_name: リード単価（CPL）
+      metric_key: cpl
+      numerator_column: line_amount
+      denominator_column: expected_leads
+      formula: line_amount / expected_leads
+      display_unit: 円/件
+      description: 1リード獲得あたりのコスト
+
+    - metric_name: 1週間あたり費用
+      metric_key: cost_per_week
+      numerator_column: line_amount
+      denominator_column: campaign_period
+      formula: line_amount / campaign_period
+      display_unit: 円/週
+      description: キャンペーン期間正規化コスト
+
+    - metric_name: クリエイティブ単価
+      metric_key: cost_per_creative
+      numerator_column: line_amount
+      denominator_column: creative_count
+      formula: line_amount / creative_count
+      display_unit: 円/本
+      description: 1クリエイティブあたりのコスト
+
+  # ── ビジネスサービス（BPO） ───────────────────────────────────────
+  bpo:
+    - metric_name: FTE単価（月額）
+      metric_key: cost_per_fte
+      numerator_column: line_amount
+      denominator_column: fte_count
+      formula: line_amount / fte_count
+      display_unit: 円/FTE/月
+      description: FTE1人あたりの月額コスト
+
+    - metric_name: 件処理単価
+      metric_key: cost_per_transaction
+      numerator_column: line_amount
+      denominator_column: transaction_volume
+      formula: line_amount / transaction_volume
+      display_unit: 円/件
+      description: 1件処理あたりのコスト
+
+    - metric_name: 時間単価
+      metric_key: cost_per_hour
+      numerator_column: line_amount
+      denominator_column: working_hours
+      formula: line_amount / working_hours
+      display_unit: 円/時間
+      description: 1時間あたりのコスト
+
+  # ── リテールプロモ ────────────────────────────────────────────────
+  retail:
+    - metric_name: 店舗あたり費用
+      metric_key: cost_per_store
+      numerator_column: line_amount
+      denominator_column: store_count
+      formula: line_amount / store_count
+      display_unit: 円/店舗
+      description: 1店舗あたりのコスト（最重要指標）
+
+    - metric_name: 派遣1回あたり費用
+      metric_key: cost_per_dispatch
+      numerator_column: line_amount
+      denominator_column: dispatch_count
+      formula: line_amount / dispatch_count
+      display_unit: 円/回
+      description: 1回の派遣・巡回あたりのコスト
+
+  # ── SCM（Logistics） ──────────────────────────────────────────────
+  logistics:
+    - metric_name: 配送1回あたり費用
+      metric_key: cost_per_shipment
+      numerator_column: line_amount
+      denominator_column: shipment_count
+      formula: line_amount / shipment_count
+      display_unit: 円/回
+      description: 1配送あたりの単価（最重要指標）
+
+    - metric_name: km単価
+      metric_key: cost_per_km
+      numerator_column: line_amount
+      denominator_column: distance_km
+      formula: line_amount / distance_km
+      display_unit: 円/km
+      description: 距離正規化コスト
+
+    - metric_name: 重量単価
+      metric_key: cost_per_kg
+      numerator_column: line_amount
+      denominator_column: weight_band
+      formula: line_amount / weight_band
+      display_unit: 円/kg
+      description: 重量正規化コスト（weight_bandが数値の場合）
+
+  # ── IT ────────────────────────────────────────────────────────────
+  it:
+    - metric_name: ライセンス単価
+      metric_key: cost_per_license
+      numerator_column: line_amount
+      denominator_column: license_count
+      formula: line_amount / license_count
+      display_unit: 円/ライセンス
+      description: 1ライセンスあたりのコスト
+
+    - metric_name: ユーザー単価
+      metric_key: cost_per_user
+      numerator_column: line_amount
+      denominator_column: user_count
+      formula: line_amount / user_count
+      display_unit: 円/ユーザー
+      description: 1ユーザーあたりのコスト
+
+    - metric_name: 年間総保有コスト（TCO）
+      metric_key: annual_tco
+      numerator_column: total_amount
+      denominator_column: null
+      formula: initial_cost + (annual_fee * contract_years)
+      display_unit: 円/年
+      description: 契約期間全体の総コスト（参考値）

@@ -14,6 +14,7 @@ dependencies = [
     "pypdf>=4.0",
     "plotly>=5.0",
     "jinja2>=3.0",
+    "openpyxl>=3.1",
     "proc-core",
 ]
 

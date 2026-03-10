@@ -1,0 +1,403 @@
+# commodity_templates.yaml
+# コモディティ群ごとの見積テンプレート定義
+# version: 1.0 / 2026-03-10
+#
+# 構造:
+#   commodity_group   : 大分類名（既存POデータの cat_large_name と一致）
+#   name_en           : 英語キー（API/DB用）
+#   core_columns      : 全コモディティ共通コア項目（列順を制御）
+#   extension_columns : このコモディティ群固有の拡張項目
+#   required_columns  : 必須列（バリデーション対象）
+#   benchmark_key     : benchmark_definitions.yaml の参照キー
+# -----------------------------------------------------------------------
+
+# ------------------------------------------------------------------
+# 共通コア項目定義（全コモディティに含める）
+# ここで定義した列を各コモディティの先頭に付与する
+# ------------------------------------------------------------------
+core_columns:
+  - name: rfq_id
+    label_ja: RFQ番号
+    dtype: string
+    required: true
+    description: RFQシステムが発番するID
+  - name: rfq_name
+    label_ja: 案件名
+    dtype: string
+    required: true
+  - name: commodity_group
+    label_ja: 大分類
+    dtype: string
+    required: true
+  - name: commodity_subgroup
+    label_ja: 中分類
+    dtype: string
+    required: false
+  - name: supplier_id
+    label_ja: サプライヤーID
+    dtype: string
+    required: true
+  - name: supplier_name
+    label_ja: サプライヤー名
+    dtype: string
+    required: true
+  - name: quotation_id
+    label_ja: 見積番号
+    dtype: string
+    required: true
+    description: サプライヤーが付番する見積番号
+  - name: quotation_date
+    label_ja: 見積日
+    dtype: date
+    required: true
+  - name: valid_until
+    label_ja: 見積有効期限
+    dtype: date
+    required: false
+  - name: currency
+    label_ja: 通貨
+    dtype: string
+    required: true
+    default: JPY
+  - name: line_no
+    label_ja: 明細番号
+    dtype: integer
+    required: true
+  - name: item_category
+    label_ja: 品目カテゴリ
+    dtype: string
+    required: false
+  - name: item_name
+    label_ja: 品目名・サービス名
+    dtype: string
+    required: true
+  - name: specification
+    label_ja: 仕様・スコープ
+    dtype: string
+    required: false
+  - name: quantity
+    label_ja: 数量
+    dtype: number
+    required: true
+  - name: unit
+    label_ja: 単位
+    dtype: string
+    required: true
+  - name: unit_price
+    label_ja: 単価（税抜）
+    dtype: number
+    required: true
+  - name: line_amount
+    label_ja: 金額（税抜）
+    dtype: number
+    required: true
+    description: quantity × unit_price
+  - name: tax_included_flag
+    label_ja: 税込フラグ
+    dtype: boolean
+    required: false
+    default: "0"
+  - name: total_amount
+    label_ja: 合計金額（税抜）
+    dtype: number
+    required: false
+    description: ヘッダ行にのみ記入
+  - name: lead_time
+    label_ja: リードタイム（日）
+    dtype: integer
+    required: false
+  - name: start_date
+    label_ja: 開始日
+    dtype: date
+    required: false
+  - name: end_date
+    label_ja: 終了日
+    dtype: date
+    required: false
+  - name: contract_term
+    label_ja: 契約期間
+    dtype: string
+    required: false
+  - name: payment_terms
+    label_ja: 支払条件
+    dtype: string
+    required: false
+    description: "例: 月末締め翌月末払い"
+  - name: trade_terms
+    label_ja: 取引条件（Incoterms相当）
+    dtype: string
+    required: false
+  - name: location
+    label_ja: 対象拠点・納入先
+    dtype: string
+    required: false
+  - name: service_scope
+    label_ja: サービス範囲・対象
+    dtype: string
+    required: false
+  - name: evaluation_comment
+    label_ja: 評価コメント（Buyer記入）
+    dtype: string
+    required: false
+  - name: remarks
+    label_ja: 備考
+    dtype: string
+    required: false
+
+# ------------------------------------------------------------------
+# コモディティ群別定義
+# ------------------------------------------------------------------
+commodities:
+
+  # ── 1. マーケティング ────────────────────────────────────────────
+  マーケティング:
+    name_en: marketing
+    benchmark_key: marketing
+    description: デジタル広告・PR・クリエイティブ制作・SEO・SNS等
+    extension_columns:
+      - name: media_cost
+        label_ja: 媒体費
+        dtype: number
+        required: false
+      - name: production_cost
+        label_ja: 制作費
+        dtype: number
+        required: false
+      - name: operation_fee
+        label_ja: 運用費
+        dtype: number
+        required: false
+      - name: campaign_period
+        label_ja: キャンペーン期間（週）
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: expected_leads
+        label_ja: 見込みリード数
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: expected_impression
+        label_ja: 見込みインプレッション数
+        dtype: integer
+        required: false
+      - name: expected_click
+        label_ja: 見込みクリック数
+        dtype: integer
+        required: false
+      - name: cpa_estimate
+        label_ja: 想定CPA（円）
+        dtype: number
+        required: false
+      - name: reporting_frequency
+        label_ja: レポーティング頻度
+        dtype: string
+        required: false
+        description: "例: 週次 / 月次"
+      - name: creative_count
+        label_ja: クリエイティブ本数
+        dtype: integer
+        required: false
+
+  # ── 2. ビジネスサービス（BPO） ────────────────────────────────────
+  ビジネスサービス:
+    name_en: bpo
+    benchmark_key: bpo
+    description: BPO・コンサル・人材派遣・総務支援等
+    extension_columns:
+      - name: fte_count
+        label_ja: FTE数
+        dtype: number
+        required: false
+        benchmark_denominator: true
+      - name: transaction_volume
+        label_ja: 月間処理件数
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: working_hours
+        label_ja: 月間稼働時間
+        dtype: number
+        required: false
+      - name: holiday_support_flag
+        label_ja: 祝日対応フラグ
+        dtype: boolean
+        required: false
+      - name: multilingual_support_flag
+        label_ja: 多言語対応フラグ
+        dtype: boolean
+        required: false
+      - name: turnaround_time
+        label_ja: ターンアラウンドタイム（時間）
+        dtype: number
+        required: false
+      - name: kpi_target
+        label_ja: KPI目標値
+        dtype: string
+        required: false
+      - name: training_cost
+        label_ja: 研修費（初期）
+        dtype: number
+        required: false
+      - name: setup_cost
+        label_ja: 導入・セットアップ費
+        dtype: number
+        required: false
+      - name: sop_flag
+        label_ja: SOP有無
+        dtype: boolean
+        required: false
+
+  # ── 3. リテールプロモ ─────────────────────────────────────────────
+  リテールプロモ:
+    name_en: retail
+    benchmark_key: retail
+    description: 店舗施工・什器・販促物・ノベルティ等
+    extension_columns:
+      - name: store_count
+        label_ja: 対象店舗数
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: fixture_unit_cost
+        label_ja: 什器単価
+        dtype: number
+        required: false
+      - name: installation_cost
+        label_ja: 施工費（1店舗）
+        dtype: number
+        required: false
+      - name: maintenance_visit_frequency
+        label_ja: 保守巡回頻度（月）
+        dtype: number
+        required: false
+      - name: area_size
+        label_ja: 売場面積（㎡）
+        dtype: number
+        required: false
+      - name: store_type
+        label_ja: 店舗形態
+        dtype: string
+        required: false
+        description: "例: スーパー / ドラッグ / コンビニ"
+      - name: dispatch_count
+        label_ja: 派遣回数
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: travel_cost
+        label_ja: 交通費（合計）
+        dtype: number
+        required: false
+      - name: emergency_support_flag
+        label_ja: 緊急対応フラグ
+        dtype: boolean
+        required: false
+
+  # ── 4. SCM（Logistics） ──────────────────────────────────────────
+  SCM:
+    name_en: logistics
+    benchmark_key: logistics
+    description: 物流・配送・倉庫・輸送管理等
+    extension_columns:
+      - name: shipment_count
+        label_ja: 配送回数（月）
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: route_type
+        label_ja: ルート区分
+        dtype: string
+        required: false
+        description: "例: 幹線 / ラスト1マイル / チャーター"
+      - name: origin
+        label_ja: 出発地（拠点）
+        dtype: string
+        required: false
+      - name: destination
+        label_ja: 目的地（拠点）
+        dtype: string
+        required: false
+      - name: distance_km
+        label_ja: 距離（km）
+        dtype: number
+        required: false
+      - name: weight_band
+        label_ja: 重量帯（kg）
+        dtype: string
+        required: false
+      - name: volume_m3
+        label_ja: 容積（㎥）
+        dtype: number
+        required: false
+      - name: warehouse_fee
+        label_ja: 保管料
+        dtype: number
+        required: false
+      - name: handling_fee
+        label_ja: 荷役費
+        dtype: number
+        required: false
+      - name: emergency_delivery_flag
+        label_ja: 緊急配送フラグ
+        dtype: boolean
+        required: false
+      - name: leadtime_service_level
+        label_ja: リードタイムSLA（時間）
+        dtype: number
+        required: false
+
+  # ── 5. IT ─────────────────────────────────────────────────────────
+  IT:
+    name_en: it
+    benchmark_key: it
+    description: SaaS・PC/周辺機器・開発外注・IT運用・クラウド等
+    extension_columns:
+      - name: license_count
+        label_ja: ライセンス数
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: user_count
+        label_ja: ユーザー数
+        dtype: integer
+        required: false
+        benchmark_denominator: true
+      - name: monthly_fee
+        label_ja: 月額費用
+        dtype: number
+        required: false
+      - name: annual_fee
+        label_ja: 年額費用
+        dtype: number
+        required: false
+      - name: initial_cost
+        label_ja: 初期費用
+        dtype: number
+        required: false
+      - name: implementation_support_fee
+        label_ja: 導入支援費
+        dtype: number
+        required: false
+      - name: maintenance_fee
+        label_ja: 保守費（年額）
+        dtype: number
+        required: false
+      - name: sla_level
+        label_ja: SLAレベル
+        dtype: string
+        required: false
+        description: "例: Gold / Silver / Standard"
+      - name: response_time
+        label_ja: 障害対応時間（時間以内）
+        dtype: number
+        required: false
+      - name: environment_type
+        label_ja: 環境区分
+        dtype: string
+        required: false
+        description: "例: Cloud / On-premise / Hybrid"
+      - name: security_requirement
+        label_ja: セキュリティ要件
+        dtype: string
+        required: false
