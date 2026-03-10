@@ -21,6 +21,18 @@ uv run streamlit run apps/OCR-doc-reader/app.py
 
 ブラウザで http://localhost:8501 を開く。
 
+### 2-b. Streamlit UI の起動（Spend Analytics）
+
+```bash
+uv run streamlit run apps/spend-analytics/app.py
+```
+
+または、プロジェクトの `.venv` を必ず使って起動したい場合:
+
+```powershell
+./scripts/run_streamlit.ps1 -App "apps/spend-analytics/app.py" -Port 8501
+```
+
 ### 3. FastAPI サーバーの起動
 
 ```bash
