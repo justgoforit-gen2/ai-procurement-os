@@ -1,0 +1,15 @@
+{
+  // Pin this project to its own virtual environment.
+  "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+
+  // Keep VS Code behavior consistent with the interpreter above.
+  "python.terminal.activateEnvironment": true,
+
+  // Pyright/Pylance: this repo uses local packages under ./packages
+  "python.analysis.extraPaths": ["packages"],
+
+  // Optional: avoid indexing the venv.
+  "files.exclude": {
+    "**/.venv": true
+  }
+}
